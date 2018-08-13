@@ -1,0 +1,1 @@
+default export routes = new VueRouter
