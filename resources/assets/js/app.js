@@ -14,6 +14,7 @@ require('./bootstrap');
 
 
 window.Vue = require('vue');
+var VueResource = require('vue-resource')
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -23,6 +24,7 @@ window.Vue = require('vue');
 
 Vue.use(ElementUI)
 Vue.use(VueRouter)
+Vue.use(VueResource)
 
 
 const router = new VueRouter({

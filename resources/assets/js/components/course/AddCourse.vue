@@ -1,9 +1,4 @@
 <template>
-    <el-card class="box-card">
-        <div slot="header" class="clearfix">
-            <span>添加课程</span>
-        </div>
-
         <el-form ref="form" :model="form" label-width="80px">
             <el-form-item label="课程名称">
                 <el-input v-model="form.name" placeholder="请输入课程名称"></el-input>
@@ -61,7 +56,6 @@
             </el-form-item>
         </el-form>
 
-    </el-card>
 </template>
 <style>
     .avatar-uploader .el-upload {
