@@ -3,7 +3,7 @@ namespace App\Http\Controllers;
 
 
 use App\Model\Course;
-use App\Model\TableOfContent;
+use App\Model\CourseFactory;
 use App\Service\CourseService;
 use Illuminate\Http\Request;
 
@@ -14,9 +14,15 @@ class CourseController
      */
     private $courseService;
 
+    /**
+     * @var CourseFactory
+     */
+    private $courseFactory;
+
     public function __construct()
     {
         $this->courseService = new CourseService();
+        $this->courseFactory = new CourseFactory();
     }
 
     public function storage(Request $request)
@@ -31,18 +37,6 @@ class CourseController
 
     public function fetchOne($id)
     {
-        $course = Course::find($id)->with('tableOfContents')->first();
-
-        $tableOfContents = array_map(
-            function ($content) {
-                return TableOfContent::withDepth()
-                    ->descendantsAndSelf($content['id'])
-                    ->toTree();
-            },
-            $course->tableOfContents->toArray()
-        );
-        $courseJSON = $course->toArray();
-        $courseJSON['table_of_contents'] = $tableOfContents;
-        return $courseJSON;
+        return $this->courseFactory->findOne($id);
     }
 }

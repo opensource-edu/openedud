@@ -9,14 +9,19 @@ class CourseService
 {
     public function storage($course)
     {
-        $courseModel = Course::create($course);
+        $courseModel = Course::create(
+            [
+                'title' => $course['title']
+            ]
+        );
 
         foreach ($course['toc'] as $toc) {
             $tocModel = TableOfContent::create($toc);
 
             $courseModel->tableOfContents()->attach($tocModel);
         }
+        $id = $courseModel->id;
 
-        return $courseModel->with('tableOfContents')->first();
+        return $courseModel->with('tableOfContents')->find($id);
     }
 }

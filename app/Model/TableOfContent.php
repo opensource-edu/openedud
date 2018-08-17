@@ -10,4 +10,5 @@ class TableOfContent extends Model
     use NodeTrait;
 
     protected $fillable = ['name'];
+
 }
