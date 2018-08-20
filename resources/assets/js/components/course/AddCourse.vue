@@ -1,61 +1,62 @@
 <template>
-        <el-form ref="form" :model="form" label-width="80px">
-            <el-form-item label="课程名称">
-                <el-input v-model="form.name" placeholder="请输入课程名称"></el-input>
-            </el-form-item>
-            <el-form-item label="课程介绍">
-                <el-input
-                        type="textarea"
-                        :autosize="{ minRows: 4, maxRows: 4}"
-                        placeholder="请输入内容"
-                        v-model="form.description">
-                </el-input>
-            </el-form-item>
-            <el-form-item label="课程封面">
-                <el-upload
-                        class="avatar-uploader"
-                        action="https://jsonplaceholder.typicode.com/posts/"
-                        :show-file-list="false"
-                        :on-success="handleAvatarSuccess"
-                        :before-upload="beforeAvatarUpload">
-                    <img v-if="form.imageUrl" :src="form.imageUrl" class="avatar">
-                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                </el-upload>
-            </el-form-item>
-
-            <el-form-item label="课程大纲">
-                <el-table :data="form.toc" border>
-                    <el-table-column
+    <el-tabs v-model="activeName" @tab-click="handleClick" v-loading="loading">
+        <el-tab-pane label="课程信息" name="basic">
+            <el-form ref="form" :model="form" label-width="80px">
+                <el-form-item label="课程名称">
+                    <el-input v-model="form.name" placeholder="请输入课程名称"></el-input>
+                </el-form-item>
+                <el-form-item label="课程介绍">
+                    <el-input
+                            type="textarea"
+                            :autosize="{ minRows: 4, maxRows: 4}"
+                            placeholder="请输入内容"
+                            v-model="form.description">
+                    </el-input>
+                </el-form-item>
+                <el-form-item label="课程封面">
+                    <el-upload
+                            class="avatar-uploader"
+                            action="https://jsonplaceholder.typicode.com/posts/"
+                            :show-file-list="false"
+                            :on-success="handleAvatarSuccess"
+                            :before-upload="beforeAvatarUpload">
+                        <img v-if="form.imageUrl" :src="form.imageUrl" class="avatar">
+                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    </el-upload>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="onSubmit">立即创建</el-button>
+                    <el-button>取消</el-button>
+                </el-form-item>
+            </el-form>
+        </el-tab-pane>
+        <el-tab-pane label="大纲" name="tableOfContents">
+            <el-table :data="form.toc" border>
+                <el-table-column
                         prop="title"
                         label="标题">
 
-                        <template scope="scope">
-                            <div :style="{marginLeft: (scope.row.depth * 10 ) + 'px'}">
-                                <el-input v-if="scope.row.editing" v-model="scope.row.title" :focus="scope.row.inputFocus" @keyup.enter.native="onRowCompleteEdit(scope.row)" placeholder="请输入标题"></el-input>
-                                <span v-if="!scope.row.editing">{{scope.row.title}}</span>
-                            </div>
-                        </template>
+                    <template scope="scope">
+                        <div :style="{marginLeft: (scope.row.depth * 10 ) + 'px'}">
+                            <el-input v-if="scope.row.editing" v-model="scope.row.title" :focus="scope.row.inputFocus" @keyup.enter.native="onRowCompleteEdit(scope.row)" placeholder="请输入标题"></el-input>
+                            <span v-if="!scope.row.editing">{{scope.row.title}}</span>
+                        </div>
+                    </template>
 
-                    </el-table-column>
+                </el-table-column>
 
-                    <el-table-column prop="action" label="操作">
-                        <template scope="scope" style="width: 100px">
-                            <el-button v-if="!scope.row.editing" @click="onRowEdit(scope.row)" size="small">编辑</el-button>
-                            <el-button v-if="scope.row.editing" @click="onRowCompleteEdit(scope.row)" size="small" type="primary">确认</el-button>
-                            <el-button v-if="scope.row.editing" @click="onRowCancelEdit(scope.row)" size="small">取消</el-button>
-                            <el-button @click="onAddChild(scope.$index, scope.row)" size="small">添加子节点</el-button>
-                        </template>
-                    </el-table-column>
+                <el-table-column prop="action" label="操作">
+                    <template scope="scope" style="width: 100px">
+                        <el-button v-if="!scope.row.editing" @click="onRowEdit(scope.row)" size="small">编辑</el-button>
+                        <el-button v-if="scope.row.editing" @click="onRowCompleteEdit(scope.row)" size="small" type="primary">确认</el-button>
+                        <el-button v-if="scope.row.editing" @click="onRowCancelEdit(scope.row)" size="small">取消</el-button>
+                        <el-button @click="onAddChild(scope.$index, scope.row)" size="small">添加子节点</el-button>
+                    </template>
+                </el-table-column>
 
-                </el-table>
-            </el-form-item>
-
-            <el-form-item>
-                <el-button type="primary" @click="onSubmit">立即创建</el-button>
-                <el-button>取消</el-button>
-            </el-form-item>
-        </el-form>
-
+            </el-table>
+        </el-tab-pane>
+    </el-tabs>
 </template>
 <style>
     .avatar-uploader .el-upload {
@@ -86,14 +87,22 @@
     export default {
         data() {
             return {
+                activeName: "basic",
                 test: 10,
+                loading: true,
                 form: {
-                    name: '',
-                    description: '',
+                    name: 'test course',
+                    description: 'test course description',
                     imageURL: '',
                     toc: [
                         {
                             title: "Chapter 1",
+                            editing: false,
+                            inputFocus: false,
+                            depth: 0
+                        },
+                        {
+                            title: "Section 1.1",
                             editing: false,
                             inputFocus: false,
                             depth: 1
@@ -102,7 +111,7 @@
                             title: "Chapter 2",
                             editing: false,
                             inputFocus: false,
-                            depth: 1
+                            depth: 0
                         },
                     ]
 
@@ -112,6 +121,10 @@
 
 
         methods: {
+            handleClick() {
+
+            },
+
             onRowCompleteEdit(row) {
                 row.editing = false
                 row.inputFocus = false

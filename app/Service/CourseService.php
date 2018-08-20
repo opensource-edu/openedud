@@ -11,7 +11,8 @@ class CourseService
     {
         $courseModel = Course::create(
             [
-                'title' => $course['title']
+                'title' => $course['title'],
+                'description' => $course['description']
             ]
         );
 

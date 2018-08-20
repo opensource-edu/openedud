@@ -9,6 +9,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="/static/bootstrap/4.1.0/bootstrap.min.css">
     <link rel="stylesheet" href="/css/openedu.css">
+    @yield("head")
     <title>Open EDU</title>
 </head>
 <body>
@@ -18,16 +19,16 @@
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
+        <div class="collapse navbar-collapse " id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="/">首页 <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Features</a>
+                    <a class="nav-link" href="/">课程列表</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Pricing</a>
+                    <a class="nav-link" href="https://open-edu.cloud">OPEN EDU</a>
                 </li>
             </ul>
         </div>
