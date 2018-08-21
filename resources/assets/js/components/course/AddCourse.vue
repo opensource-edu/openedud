@@ -1,62 +1,114 @@
 <template>
-    <el-tabs v-model="activeName" @tab-click="handleClick" v-loading="loading">
-        <el-tab-pane label="课程信息" name="basic">
-            <el-form ref="form" :model="form" label-width="80px">
-                <el-form-item label="课程名称">
-                    <el-input v-model="form.title" placeholder="请输入课程名称"></el-input>
-                </el-form-item>
-                <el-form-item label="课程介绍">
-                    <el-input
-                            type="textarea"
-                            :autosize="{ minRows: 4, maxRows: 4}"
-                            placeholder="请输入内容"
-                            v-model="form.description">
-                    </el-input>
-                </el-form-item>
-                <el-form-item label="课程封面">
-                    <el-upload
-                            class="avatar-uploader"
-                            action="https://jsonplaceholder.typicode.com/posts/"
-                            :show-file-list="false"
-                            :on-success="handleAvatarSuccess"
-                            :before-upload="beforeAvatarUpload">
-                        <img v-if="form.imageUrl" :src="form.imageUrl" class="avatar">
-                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                    </el-upload>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="onSubmit">立即创建</el-button>
-                    <el-button>取消</el-button>
-                </el-form-item>
-            </el-form>
-        </el-tab-pane>
-        <el-tab-pane label="大纲" name="tableOfContents">
-            <el-table :data="form.toc" border>
-                <el-table-column
-                        prop="title"
-                        label="标题">
+    <el-row type="flex">
+        <el-col :span="20">
+            <el-dialog
+                    title="挂载资源"
+                    :visible.sync="resourceVisible"
+                    width="60%"
+                    center
+            >
 
-                    <template scope="scope">
-                        <div :style="{marginLeft: (scope.row.depth * 10 ) + 'px'}">
-                            <el-input v-if="scope.row.editing" v-model="scope.row.title" :focus="scope.row.inputFocus" @keyup.enter.native="onRowCompleteEdit(scope.row)" placeholder="请输入标题"></el-input>
-                            <span v-if="!scope.row.editing">{{scope.row.title}}</span>
-                        </div>
-                    </template>
+                <el-tabs v-model="attachResourceActiveName">
+                    <el-tab-pane label="上传资源" name="uploader">
+                        <el-row type="flex" justify="center">
+                            <el-col>
+                                <el-upload
+                                        class="upload-demo justify-content-center"
+                                        type="flex"
+                                        justify="center"
+                                        drag
+                                        action="https://jsonplaceholder.typicode.com/posts/"
+                                        multiple>
+                                    <i class="el-icon-upload"></i>
+                                    <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                                    <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+                                </el-upload>
+                            </el-col>
+                        </el-row>
+                    </el-tab-pane>
 
-                </el-table-column>
+                    <el-tab-pane label="选择资源" name="choice">
+                        <el-table :data="resources" border >
+                            <el-table-column prop="id" label="id" width="80"></el-table-column>
+                            <el-table-column prop="title" label="标题"></el-table-column>
+                            <el-table-column title="选择">
+                                <template scope="scope">
+                                    <el-checkbox v-model="scope.row.choose" label="选择"></el-checkbox>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </el-tab-pane>
+                </el-tabs>
 
-                <el-table-column prop="action" label="操作">
-                    <template scope="scope" style="width: 100px">
-                        <el-button v-if="!scope.row.editing" @click="onRowEdit(scope.row)" size="small">编辑</el-button>
-                        <el-button v-if="scope.row.editing" @click="onRowCompleteEdit(scope.row)" size="small" type="primary">确认</el-button>
-                        <el-button v-if="scope.row.editing" @click="onRowCancelEdit(scope.row)" size="small">取消</el-button>
-                        <el-button @click="onAddChild(scope.$index, scope.row)" size="small">添加子节点</el-button>
-                    </template>
-                </el-table-column>
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="dialogVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+                </span>
 
-            </el-table>
-        </el-tab-pane>
-    </el-tabs>
+            </el-dialog>
+
+            <el-tabs v-model="activeName" @tab-click="handleClick" v-loading="loading" v-if="!resourceVisible">
+                <el-tab-pane label="课程信息" name="basic">
+                    <el-form ref="form" :model="form" label-width="80px">
+                        <el-form-item label="课程名称">
+                            <el-input v-model="form.title" placeholder="请输入课程名称"></el-input>
+                        </el-form-item>
+                        <el-form-item label="课程介绍">
+                            <el-input
+                                    type="textarea"
+                                    :autosize="{ minRows: 4, maxRows: 4}"
+                                    placeholder="请输入内容"
+                                    v-model="form.description">
+                            </el-input>
+                        </el-form-item>
+                        <el-form-item label="课程封面">
+                            <el-upload
+                                    class="avatar-uploader"
+                                    action="https://jsonplaceholder.typicode.com/posts/"
+                                    :show-file-list="false"
+                                    :on-success="handleAvatarSuccess"
+                                    :before-upload="beforeAvatarUpload">
+                                <img v-if="form.imageUrl" :src="form.imageUrl" class="avatar">
+                                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                            </el-upload>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button type="primary" @click="onSubmit">立即创建</el-button>
+                            <el-button>取消</el-button>
+                        </el-form-item>
+                    </el-form>
+                </el-tab-pane>
+                <el-tab-pane label="大纲" name="tableOfContents">
+                    <el-table :data="form.toc" border>
+                        <el-table-column
+                                prop="title"
+                                label="标题">
+
+                            <template scope="scope">
+                                <div :style="{marginLeft: (scope.row.depth * 10 ) + 'px'}">
+                                    <el-input v-if="scope.row.editing" v-model="scope.row.title" :focus="scope.row.inputFocus" @keyup.enter.native="onRowCompleteEdit(scope.row)" placeholder="请输入标题"></el-input>
+                                    <span v-if="!scope.row.editing">{{scope.row.title}}</span>
+                                </div>
+                            </template>
+
+                        </el-table-column>
+
+                        <el-table-column prop="action" label="操作">
+                            <template scope="scope" style="width: 100px">
+                                <el-button v-if="!scope.row.editing" @click="onRowEdit(scope.row)" size="small">编辑</el-button>
+                                <el-button v-if="scope.row.editing" @click="onRowCompleteEdit(scope.row)" size="small" type="primary">确认</el-button>
+                                <el-button v-if="scope.row.editing" @click="onRowCancelEdit(scope.row)" size="small">取消</el-button>
+                                <el-button @click="onAddChild(scope.$index, scope.row)" size="small">添加子节点</el-button>
+                                <el-button @click="onAttachResource(scope.$index, scope.row)" size="small">挂载资源</el-button>
+                            </template>
+                        </el-table-column>
+
+                    </el-table>
+                </el-tab-pane>
+            </el-tabs>
+        </el-col>
+    </el-row>
+
 </template>
 <style>
     .avatar-uploader .el-upload {
@@ -85,10 +137,32 @@
 </style>
 <script>
     import TocTransfer from '../../TocTransfer'
+    import ResourceChoiceComponent from './ResourceChoiceComponent'
 
     export default {
+        components: {
+            'resource-choice': ResourceChoiceComponent
+        },
+
         data() {
             return {
+                resourceVisible: true,
+                attachResourceActiveName: 'uploader',
+                chooseAttachTOC: null,
+                resources: [
+                    {
+                        id: 1,
+                        title: '学习视频 1',
+                        type: 'video',
+                        choose: "选择"
+                    },
+                    {
+                        id: 2,
+                        title: '学习视频 2',
+                        type: 'video',
+                        choose: "选择"
+                    }
+                ],
                 activeName: "basic",
                 test: 10,
                 loading: false,
@@ -125,6 +199,10 @@
         methods: {
             handleClick() {
 
+            },
+
+            onAttachResource(index, row) {
+                this.resourceVisible = true
             },
 
             onRowCompleteEdit(row) {
