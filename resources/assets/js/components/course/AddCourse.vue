@@ -3,7 +3,7 @@
         <el-tab-pane label="课程信息" name="basic">
             <el-form ref="form" :model="form" label-width="80px">
                 <el-form-item label="课程名称">
-                    <el-input v-model="form.name" placeholder="请输入课程名称"></el-input>
+                    <el-input v-model="form.title" placeholder="请输入课程名称"></el-input>
                 </el-form-item>
                 <el-form-item label="课程介绍">
                     <el-input
@@ -84,14 +84,16 @@
     }
 </style>
 <script>
+    import TocTransfer from '../../TocTransfer'
+
     export default {
         data() {
             return {
                 activeName: "basic",
                 test: 10,
-                loading: true,
+                loading: false,
                 form: {
-                    name: 'test course',
+                    title: 'test course',
                     description: 'test course description',
                     imageURL: '',
                     toc: [
@@ -185,11 +187,26 @@
                 })
             },
 
-            onSubmit() {
+            async onSubmit() {
+                console.debug('button click of course create')
 
+                const tocTransfer = new TocTransfer()
+                const toc = tocTransfer.toTree(this.form.toc)
+                const course = {
+                    title: this.form.title,
+                    description: this.form.description,
+                    toc: toc
+                }
 
-                const toc = toTree(this.form.toc)
-                console.log('submit!');
+                this.loading = true
+                try {
+                    await this.$http.post('/api/course', course)
+                } catch (e) {
+                    console.error(e.message)
+                    this.$message.error('创建课程失败')
+                }
+                this.loading = false
+                console.debug(response)
             },
 
             handleAvatarSuccess(res, file) {
