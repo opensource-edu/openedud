@@ -9,6 +9,7 @@ export default class TocTransfer {
                 , isSibilingByPrevious = false
 
             const node = {
+                id: content.id,
                 title: content.title,
                 parent: null,
                 children: [],
@@ -16,37 +17,25 @@ export default class TocTransfer {
             }
 
             if (previous === null) {
-                console.debug('previous is null')
                 previous = node
                 contents.push(node)
                 continue
             }
 
-            console.debug('content')
-            console.debug(content)
-            console.debug('previous')
-            console.debug(previous)
             if (content.depth === previous.depth) {
-                console.debug('content is sibiling')
                 isSibilingByPrevious = true
             } else if (content.depth > previous.depth) {
-                console.debug('content is child')
                 isChildByPrevious = true
             } else if (content.depth < previous.depth) {
                 contents.push(node)
             }
 
             if (isChildByPrevious) {
-                console.debug('is child')
-                // console.debug(previous)
-
                 node.parent = previous
                 previous.children.push(node)
-                console.debug(previous)
             }
 
             if (isSibilingByPrevious) {
-                console.debug('is sibiling')
                 if (previous.parent) {
                     previous.parent.children.push(node)
                 } else {
@@ -59,8 +48,6 @@ export default class TocTransfer {
 
         const clearTree = function(tree) {
             for (var node of tree) {
-                console.debug('clear tree')
-                console.debug(node)
                 if (node.children.length > 0) {
                     clearTree(node.children)
                 }
