@@ -15,7 +15,7 @@ class CreateTableToc extends Migration
     {
         Schema::create('table_of_contents', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
+            $table->string('title');
             $table->timestamps();
             $table->nestedSet();
         });
