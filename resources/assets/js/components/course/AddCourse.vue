@@ -14,11 +14,15 @@
                             <el-col>
                                 <el-upload
                                         class="upload-demo justify-content-center"
+                                        :on-preview="onUploadPreview"
+                                        :on-exceed="onExceed"
+                                        :before-upload="onBeforeUpload"
+                                        :http-request="uploadHttpRequest"
                                         type="flex"
                                         justify="center"
                                         drag
-                                        action="https://jsonplaceholder.typicode.com/posts/"
-                                        multiple>
+                                        multiple
+                                >
                                     <i class="el-icon-upload"></i>
                                     <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
                                     <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
@@ -163,6 +167,10 @@
                         choose: "选择"
                     }
                 ],
+                uploadURL: '',
+                accessKey: '',
+                signature: '',
+                policy: '',
                 activeName: "basic",
                 test: 10,
                 loading: false,
@@ -199,6 +207,46 @@
         methods: {
             handleClick() {
 
+            },
+
+            onUploadPreview(file) {
+                console.debug(file)
+            },
+
+            onExceed(file, fileList) {
+                console.debug(file)
+                console.debug(fileList)
+            },
+
+            async onBeforeUpload(file) {
+                console.debug(file)
+
+                const response = await this.$http.post(
+                    '/api/resource/uploader',
+                    {
+                        raw_name: file.name,
+                        size: file.size,
+                        mime_type: file.type
+                    }
+                )
+                console.debug(response)
+                this.uploadURL = response.data.upload_url
+                this.signature = response.data.signature
+                this.accessKey = response.data.access_key
+                this.policy = response.data.policy
+                this.object_path = response.data.object_path
+            },
+
+            uploadHttpRequest(request) {
+                const formData = new FormData()
+
+                formData.append('key', this.object_path)
+                formData.append('file', request.file)
+                formData.append('OSSAccessKeyId', this.accessKey)
+                formData.append('policy', this.policy)
+                formData.append('signature', this.signature)
+                console.debug(this.uploadURL)
+                this.$http.post(this.uploadURL, formData)
             },
 
             onAttachResource(index, row) {
