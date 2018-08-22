@@ -13,11 +13,12 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+//Route::middleware('auth:api')->get('/user', function (Request $request) {
+//    return $request->user();
+//});
 
 Route::post('/resource/uploader', 'ResourceController@uploader');
+Route::put('/resource/{id}/status', 'ResourceController@changeStatus');
 Route::get('/courses', 'CourseController@fetchList');
 Route::get('/course/{id}', 'CourseController@fetchOne');
 Route::post('/course', 'CourseController@storage');

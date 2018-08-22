@@ -171,6 +171,7 @@
                 accessKey: '',
                 signature: '',
                 policy: '',
+                uploadingResource: null,
                 activeName: "basic",
                 test: 10,
                 loading: false,
@@ -235,9 +236,10 @@
                 this.accessKey = response.data.access_key
                 this.policy = response.data.policy
                 this.object_path = response.data.object_path
+                this.uploadingResource = response.data.resource
             },
 
-            uploadHttpRequest(request) {
+            async uploadHttpRequest(request) {
                 const formData = new FormData()
 
                 formData.append('key', this.object_path)
@@ -246,7 +248,16 @@
                 formData.append('policy', this.policy)
                 formData.append('signature', this.signature)
                 console.debug(this.uploadURL)
-                this.$http.post(this.uploadURL, formData)
+                await this.$http.post(this.uploadURL, formData)
+                console.debug('uploaded')
+                console.debug(this.uploadingResource)
+
+                await this.$http.put(
+                    `/api/resource/${this.uploadingResource.id}/status`,
+                    {
+                        'status': 'available'
+                    }
+                )
             },
 
             onAttachResource(index, row) {

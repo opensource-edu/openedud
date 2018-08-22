@@ -77,4 +77,13 @@ class ResourceController
             'object_path' => $objectPath
         ];
     }
+
+    public function changeStatus(int $id, Request $request)
+    {
+        $resource = Resource::find($id);
+        $resource->status = $request->get('status');
+        $resource->save();
+
+        return $resource;
+    }
 }
