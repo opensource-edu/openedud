@@ -23,6 +23,11 @@ class CourseService
         }
         $id = $courseModel->id;
 
-        return $courseModel->with('tableOfContents')->find($id);
+        return $courseModel
+            ->with([
+                'tableOfContents',
+                'tableOfContents.resource'
+            ])
+            ->find($id);
     }
 }

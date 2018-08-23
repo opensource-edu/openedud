@@ -6,13 +6,19 @@ class CourseFactory
 {
     public function findOne($id)
     {
-        $course = Course::find($id)->with('tableOfContents')->first();
+        $course = Course::with([
+            'tableOfContents',
+            'tableOfContents.resource'
+            ])
+            ->find($id);
 
         $tableOfContents = array_map(
             function ($content) {
-                return TableOfContent::withDepth()
+                $toc = TableOfContent::withDepth()
+                    ->with('resource')
                     ->descendantsAndSelf($content['id'])
                     ->toTree();
+                return $toc;
             },
             $course->tableOfContents->toArray()
         );

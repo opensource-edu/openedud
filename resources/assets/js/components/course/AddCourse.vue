@@ -220,7 +220,8 @@
                     title: "123123",
                     editing: false,
                     inputFocus: false,
-                    isResource: true
+                    isResource: true,
+                    resource_id: 40
                 })
 
                 this.resourceVisible = false

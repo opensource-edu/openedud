@@ -2,6 +2,7 @@
 namespace Tests\App\Service;
 
 
+use App\Model\Resource;
 use App\Service\CourseService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -12,27 +13,40 @@ class CourseServiceTest extends TestCase
 
     public function testCreate()
     {
+        $resource = Resource::create([
+            'discriminator' => 'video',
+            'title' => 'test',
+            'status' => 'available',
+            'mime_type' => 'video/mp4',
+            'size' => 1,
+            'description' => 'test'
+        ]);
+
         $courseService = new CourseService();
-        $courseService->storage([
+        $course = $courseService->storage([
             'title' => 'Course1',
+            'description' => 'test',
             'toc' => [
                 [
-                    'name' => 'Chapter 1',
+                    'title' => 'Chapter 1',
                     'children' => [
                         [
-                            'name' => 'Section 1'
+                            'title' => 'Section 1',
+                            'resource_id' => $resource->id
                         ]
                     ]
                 ],
                 [
-                    'name' => 'Chapter 2',
+                    'title' => 'Chapter 2',
                     'children' => [
                         [
-                            'name' => 'Section 2'
+                            'title' => 'Section 2'
                         ]
                     ]
                 ]
             ]
         ]);
+
+        var_dump($course->toArray());
     }
 }

@@ -13,7 +13,8 @@ export default class TocTransfer {
                 title: content.title,
                 parent: null,
                 children: [],
-                depth: content.depth
+                depth: content.depth,
+                resource_id: content.resource_id
             }
 
             if (previous === null) {

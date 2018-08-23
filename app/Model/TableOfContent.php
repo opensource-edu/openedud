@@ -9,6 +9,10 @@ class TableOfContent extends Model
 {
     use NodeTrait;
 
-    protected $fillable = ['title'];
+    protected $fillable = ['title', 'resource_id'];
 
+    public function resource()
+    {
+        return $this->hasOne(Resource::class, 'id', 'resource_id');
+    }
 }
