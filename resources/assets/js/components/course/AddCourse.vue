@@ -46,7 +46,7 @@
 
                 <span slot="footer" class="dialog-footer">
                     <el-button @click="dialogVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+                    <el-button type="primary" @click="onAttachResourceConfirm">确 定</el-button>
                 </span>
 
             </el-dialog>
@@ -102,8 +102,8 @@
                                 <el-button v-if="!scope.row.editing" @click="onRowEdit(scope.row)" size="small">编辑</el-button>
                                 <el-button v-if="scope.row.editing" @click="onRowCompleteEdit(scope.row)" size="small" type="primary">确认</el-button>
                                 <el-button v-if="scope.row.editing" @click="onRowCancelEdit(scope.row)" size="small">取消</el-button>
-                                <el-button @click="onAddChild(scope.$index, scope.row)" size="small">添加子节点</el-button>
-                                <el-button @click="onAttachResource(scope.$index, scope.row)" size="small">挂载资源</el-button>
+                                <el-button v-if="!scope.row.isResource" @click="onAddChild(scope.$index, scope.row)" size="small">添加子节点</el-button>
+                                <el-button v-if="!scope.row.isResource" @click="onAttachResource(scope.$index, scope.row)" size="small">挂载资源</el-button>
                             </template>
                         </el-table-column>
 
@@ -150,9 +150,10 @@
 
         data() {
             return {
-                resourceVisible: true,
+                resourceVisible: false,
                 attachResourceActiveName: 'uploader',
                 chooseAttachTOC: null,
+                chooseAttachTOCIndex: -1,
                 resources: [
                     {
                         id: 1,
@@ -172,7 +173,7 @@
                 signature: '',
                 policy: '',
                 uploadingResource: null,
-                activeName: "basic",
+                activeName: "tableOfContents",
                 test: 10,
                 loading: false,
                 form: {
@@ -184,18 +185,21 @@
                             title: "Chapter 1",
                             editing: false,
                             inputFocus: false,
+                            isResource: false,
                             depth: 0
                         },
                         {
                             title: "Section 1.1",
                             editing: false,
                             inputFocus: false,
+                            isResource: false,
                             depth: 1
                         },
                         {
                             title: "Chapter 2",
                             editing: false,
                             inputFocus: false,
+                            isResource: false,
                             depth: 0
                         },
                     ]
@@ -208,6 +212,18 @@
         methods: {
             handleClick() {
 
+            },
+
+            onAttachResourceConfirm() {
+
+                this.addChild(this.chooseAttachTOCIndex, this.chooseAttachTOC, {
+                    title: "123123",
+                    editing: false,
+                    inputFocus: false,
+                    isResource: true
+                })
+
+                this.resourceVisible = false
             },
 
             onUploadPreview(file) {
@@ -261,6 +277,8 @@
             },
 
             onAttachResource(index, row) {
+                this.chooseAttachTOC = row
+                this.chooseAttachTOCIndex = index
                 this.resourceVisible = true
             },
 
@@ -281,20 +299,40 @@
                 row.inputFocus = true
             },
 
-            onAddChild(index, parent) {
+
+            addChild(index, parent, row) {
                 var foundIndex = -1
                 console.debug(`select index ${index}`)
-                // debugger
-                // const next = this.form.toc[index + 1]
-                // if (next) {
-                //     console.debug('next')
-                //     console.debug(JSON.stringify(next))
-                //     console.debug(JSON.stringify(parent))
-                //     if (next.depth < parent.depth) {
-                //         foundIndex = index + 1
-                //         console.debug(foundIndex)
-                //     }
-                // }
+
+
+                for (var i = index + 1, size = this.form.toc.length; i < size; i++) {
+                    const found = this.form.toc[i]
+                    console.debug(`search index ${i} depth ${found.depth} parent ${parent.depth} title ${found.title}`)
+
+                    if (parent.depth === found.depth) {
+                        foundIndex = i
+                        break
+                    }
+
+                    if (parent.depth == found.depth + 1) {
+                        foundIndex = i
+                        break
+                    }
+                }
+
+                if (-1 === foundIndex) {
+                    foundIndex = this.form.toc.length
+                }
+
+                console.debug(`found index ${foundIndex}`)
+
+                row.depth = parent.depth + 1
+
+                this.form.toc.splice(foundIndex, 0, row)
+            },
+
+            onAddChild(index, parent) {
+                var foundIndex = -1
 
                 if (-1 === foundIndex) {
                     for (var i = index + 1, size = this.form.toc.length; i < size; i++) {
@@ -303,6 +341,11 @@
 
                         if (parent.depth === found.depth) {
                             console.debug('search complete')
+                            foundIndex = i
+                            break
+                        }
+
+                        if (parent.depth == found.depth + 1) {
                             foundIndex = i
                             break
                         }
@@ -320,6 +363,7 @@
                     editing: true,
                     inputFocus: true,
                     depth: parent.depth + 1,
+                    isResource: false,
                     parent: parent.id
                 })
             },

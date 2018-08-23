@@ -22,6 +22,11 @@ describe("TocTransfer", () => {
                 depth: 2
             },
             {
+                id: 10,
+                title: "资源",
+                depth: 3
+            },
+            {
                 id: 4,
                 title: 'Chapter 2',
                 depth: 0

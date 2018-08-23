@@ -101486,9 +101486,10 @@ exports.default = {
 
     data: function data() {
         return {
-            resourceVisible: true,
+            resourceVisible: false,
             attachResourceActiveName: 'uploader',
             chooseAttachTOC: null,
+            chooseAttachTOCIndex: -1,
             resources: [{
                 id: 1,
                 title: '学习视频 1',
@@ -101505,7 +101506,7 @@ exports.default = {
             signature: '',
             policy: '',
             uploadingResource: null,
-            activeName: "basic",
+            activeName: "tableOfContents",
             test: 10,
             loading: false,
             form: {
@@ -101516,16 +101517,19 @@ exports.default = {
                     title: "Chapter 1",
                     editing: false,
                     inputFocus: false,
+                    isResource: false,
                     depth: 0
                 }, {
                     title: "Section 1.1",
                     editing: false,
                     inputFocus: false,
+                    isResource: false,
                     depth: 1
                 }, {
                     title: "Chapter 2",
                     editing: false,
                     inputFocus: false,
+                    isResource: false,
                     depth: 0
                 }]
 
@@ -101536,6 +101540,17 @@ exports.default = {
 
     methods: {
         handleClick: function handleClick() {},
+        onAttachResourceConfirm: function onAttachResourceConfirm() {
+
+            this.addChild(this.chooseAttachTOCIndex, this.chooseAttachTOC, {
+                title: "123123",
+                editing: false,
+                inputFocus: false,
+                isResource: true
+            });
+
+            this.resourceVisible = false;
+        },
         onUploadPreview: function onUploadPreview(file) {
             console.debug(file);
         },
@@ -101627,6 +101642,8 @@ exports.default = {
             return uploadHttpRequest;
         }(),
         onAttachResource: function onAttachResource(index, row) {
+            this.chooseAttachTOC = row;
+            this.chooseAttachTOCIndex = index;
             this.resourceVisible = true;
         },
         onRowCompleteEdit: function onRowCompleteEdit(row) {
@@ -101643,20 +101660,37 @@ exports.default = {
             row.editing = true;
             row.inputFocus = true;
         },
-        onAddChild: function onAddChild(index, parent) {
+        addChild: function addChild(index, parent, row) {
             var foundIndex = -1;
             console.debug('select index ' + index);
-            // debugger
-            // const next = this.form.toc[index + 1]
-            // if (next) {
-            //     console.debug('next')
-            //     console.debug(JSON.stringify(next))
-            //     console.debug(JSON.stringify(parent))
-            //     if (next.depth < parent.depth) {
-            //         foundIndex = index + 1
-            //         console.debug(foundIndex)
-            //     }
-            // }
+
+            for (var i = index + 1, size = this.form.toc.length; i < size; i++) {
+                var found = this.form.toc[i];
+                console.debug('search index ' + i + ' depth ' + found.depth + ' parent ' + parent.depth + ' title ' + found.title);
+
+                if (parent.depth === found.depth) {
+                    foundIndex = i;
+                    break;
+                }
+
+                if (parent.depth == found.depth + 1) {
+                    foundIndex = i;
+                    break;
+                }
+            }
+
+            if (-1 === foundIndex) {
+                foundIndex = this.form.toc.length;
+            }
+
+            console.debug('found index ' + foundIndex);
+
+            row.depth = parent.depth + 1;
+
+            this.form.toc.splice(foundIndex, 0, row);
+        },
+        onAddChild: function onAddChild(index, parent) {
+            var foundIndex = -1;
 
             if (-1 === foundIndex) {
                 for (var i = index + 1, size = this.form.toc.length; i < size; i++) {
@@ -101665,6 +101699,11 @@ exports.default = {
 
                     if (parent.depth === found.depth) {
                         console.debug('search complete');
+                        foundIndex = i;
+                        break;
+                    }
+
+                    if (parent.depth == found.depth + 1) {
                         foundIndex = i;
                         break;
                     }
@@ -101682,6 +101721,7 @@ exports.default = {
                 editing: true,
                 inputFocus: true,
                 depth: parent.depth + 1,
+                isResource: false,
                 parent: parent.id
             });
         },
@@ -102187,11 +102227,7 @@ var render = function() {
                     "el-button",
                     {
                       attrs: { type: "primary" },
-                      on: {
-                        click: function($event) {
-                          _vm.dialogVisible = false
-                        }
-                      }
+                      on: { click: _vm.onAttachResourceConfirm }
                     },
                     [_vm._v("确 定")]
                   )
@@ -102462,37 +102498,41 @@ var render = function() {
                                         )
                                       : _vm._e(),
                                     _vm._v(" "),
-                                    _c(
-                                      "el-button",
-                                      {
-                                        attrs: { size: "small" },
-                                        on: {
-                                          click: function($event) {
-                                            _vm.onAddChild(
-                                              scope.$index,
-                                              scope.row
-                                            )
-                                          }
-                                        }
-                                      },
-                                      [_vm._v("添加子节点")]
-                                    ),
+                                    !scope.row.isResource
+                                      ? _c(
+                                          "el-button",
+                                          {
+                                            attrs: { size: "small" },
+                                            on: {
+                                              click: function($event) {
+                                                _vm.onAddChild(
+                                                  scope.$index,
+                                                  scope.row
+                                                )
+                                              }
+                                            }
+                                          },
+                                          [_vm._v("添加子节点")]
+                                        )
+                                      : _vm._e(),
                                     _vm._v(" "),
-                                    _c(
-                                      "el-button",
-                                      {
-                                        attrs: { size: "small" },
-                                        on: {
-                                          click: function($event) {
-                                            _vm.onAttachResource(
-                                              scope.$index,
-                                              scope.row
-                                            )
-                                          }
-                                        }
-                                      },
-                                      [_vm._v("挂载资源")]
-                                    )
+                                    !scope.row.isResource
+                                      ? _c(
+                                          "el-button",
+                                          {
+                                            attrs: { size: "small" },
+                                            on: {
+                                              click: function($event) {
+                                                _vm.onAttachResource(
+                                                  scope.$index,
+                                                  scope.row
+                                                )
+                                              }
+                                            }
+                                          },
+                                          [_vm._v("挂载资源")]
+                                        )
+                                      : _vm._e()
                                   ]
                                 }
                               }
