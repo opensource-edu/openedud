@@ -37,7 +37,7 @@
                             </el-table-column>
                             <el-table-column>
                                 <template slot-scope="scope">
-                                    <el-button size="small">编辑</el-button>
+                                    <el-button size="small" @click="onClickEdit(scope.row)">编辑</el-button>
                                 </template>
                             </el-table-column>
 
@@ -78,8 +78,11 @@
             },
 
             onClickAddNewCourse() {
-
                 this.$router.push('/course/add')
+            },
+
+            onClickEdit(course) {
+                this.$router.push()
             }
         }
     }

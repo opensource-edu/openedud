@@ -31,7 +31,8 @@ const router = new VueRouter({
     routes: [
         { path: '/', component: require('./components/ExampleComponent.vue') },
         { path: '/course', component: require('./components/course/CourseList.vue') },
-        { path: '/course/add', component: require('./components/course/AddCourse.vue') }
+        { path: '/course/:id/edit', component: require('./components/course/CourseEdit.vue') },
+        { path: '/course/add', component: require('./components/course/AddCourse.vue') },
     ]
 })
 

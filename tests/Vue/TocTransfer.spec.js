@@ -56,4 +56,10 @@ describe("TocTransfer", () => {
         expect(toc[1].children[0].title).to.equal('Section 2.1')
         expect(toc[1].children[0].depth).to.equal(1)
     })
+
+    it('should return a flat array', () => {
+        const aTree = {
+            'title': 'Chapter 1',
+        }
+    })
 })
