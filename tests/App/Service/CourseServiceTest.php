@@ -23,7 +23,7 @@ class CourseServiceTest extends TestCase
         ]);
 
         $courseService = new CourseService();
-        $course = $courseService->storage([
+        $courseUnsaved = [
             'title' => 'Course1',
             'description' => 'test',
             'toc' => [
@@ -45,8 +45,61 @@ class CourseServiceTest extends TestCase
                     ]
                 ]
             ]
-        ]);
+        ];
+        $course = $courseService->storage($courseUnsaved);
 
-        var_dump($course->toArray());
+        $courseSaved = [
+            'id' => 1,
+            'title' => 'Course1 changed',
+            'description' => 'test',
+            'toc' => [
+                [
+                    'id' => 1,
+                    'title' => 'Chapter 1 Changed',
+                    'children' => [
+                        [
+                            'id' => 2,
+                            'title' => 'Section 1',
+                            'resource_id' => $resource->id
+                        ],
+                        [
+                            'title' => 'Section 1.2',
+                            'resource_id' => $resource->id
+                        ]
+                    ]
+                ],
+                [
+                    'id' => 3,
+                    'title' => 'Chapter 2',
+                    'children' => [
+                        [
+                            'id' => 4,
+                            'title' => 'Section 2'
+                        ]
+                    ]
+                ],
+                [
+                    'title' => 'Chapter 3',
+                    'children' => [
+                        [
+                            'title' => 'Section 3.1'
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        $course = $courseService->storage($courseSaved);
+
+        $chapter = $course->tableOfContents[0];
+        $section = $chapter->children[1];
+
+        $this->assertEquals('Course1 changed', $course->title);
+        $this->assertEquals('Chapter 1 Changed', $chapter->title);
+        $this->assertEquals('Section 1.2', $section->title);
+        $this->assertEquals($resource->id, $section->resource->id);
+
+        $chapter3 = $course->tableOfContents[2];
+        $this->assertEquals('Chapter 3', $chapter3->title);
     }
 }

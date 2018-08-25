@@ -9,17 +9,34 @@ class CourseService
 {
     public function storage($course)
     {
-        $courseModel = Course::create(
-            [
-                'title' => $course['title'],
-                'description' => $course['description']
-            ]
-        );
+        $editing = false;
+        if (isset($course['id'])) {
+            $editing = true;
+            $courseModel = Course::with('tableOfContents')
+                ->find((int)$course['id']);
+            $courseModel->title = $course['title'];
+            $courseModel->save();
+        } else {
+            $courseModel = Course::create(
+                [
+                    'title' => $course['title'],
+                    'description' => $course['description']
+                ]
+            );
+        }
 
         foreach ($course['toc'] as $toc) {
-            $tocModel = TableOfContent::create($toc);
+            $attached = isset($toc['id']);
 
-            $courseModel->tableOfContents()->attach($tocModel);
+            // if attached and build tree
+            if ($attached) {
+                TableOfContent::rebuildTree(
+                    [$toc]
+                );
+            } else {
+                $tocModel = TableOfContent::create($toc);
+                $courseModel->tableOfContents()->attach($tocModel);
+            }
         }
         $id = $courseModel->id;
 
@@ -29,5 +46,10 @@ class CourseService
                 'tableOfContents.resource'
             ])
             ->find($id);
+    }
+
+    function findUnattachedTOC($tocList)
+    {
+
     }
 }
