@@ -58,12 +58,12 @@ class CourseServiceTest extends TestCase
                     'title' => 'Chapter 1 Changed',
                     'children' => [
                         [
-                            'id' => 2,
-                            'title' => 'Section 1',
+                            'title' => 'Section 1.2',
                             'resource_id' => $resource->id
                         ],
                         [
-                            'title' => 'Section 1.2',
+                            'id' => 2,
+                            'title' => 'Section 1',
                             'resource_id' => $resource->id
                         ]
                     ]

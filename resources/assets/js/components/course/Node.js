@@ -1,7 +1,7 @@
 export default class Node {
-    constructor(id, title, children) {
+    constructor(id, depth, children) {
         this.id = id
-        this.title = title
+        this.depth = depth
         this.children = children
     }
 }
