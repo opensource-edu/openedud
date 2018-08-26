@@ -6,6 +6,7 @@ export default class CourseViewModelAssembler {
         const viewModel = new CourseViewModel(
             course.id,
             course.title,
+            course.description,
             this.toTableOfContentViewModelList(course.table_of_contents)
         )
 
@@ -14,7 +15,9 @@ export default class CourseViewModelAssembler {
 
     toTableOfContentViewModel(tableOfContent) {
         return new TableOfContentViewModel(
-            tableOfContent.id, tableOfContent.title, parseInt(tableOfContent.depth)
+            tableOfContent.id || 0,
+            tableOfContent.title,
+            parseInt(tableOfContent.depth)
         )
     }
 

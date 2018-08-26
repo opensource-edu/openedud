@@ -15,6 +15,7 @@ class CourseService
             $courseModel = Course::with('tableOfContents')
                 ->find((int)$course['id']);
             $courseModel->title = $course['title'];
+            $courseModel->description = $course['description'];
             $courseModel->save();
         } else {
             $courseModel = Course::create(
@@ -25,7 +26,8 @@ class CourseService
             );
         }
 
-        foreach ($course['toc'] as $toc) {
+        if (isset($course['toc'])) {
+            foreach ($course['toc'] as $toc) {
                 $attached = isset($toc['id']);
 
                 // if attached and build tree
@@ -37,6 +39,7 @@ class CourseService
                     $tocModel = TableOfContent::create($toc);
                     $courseModel->tableOfContents()->attach($tocModel);
                 }
+            }
         }
         $id = $courseModel->id;
 

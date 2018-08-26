@@ -90,7 +90,7 @@
 
                             <template scope="scope">
                                 <div :style="{marginLeft: (scope.row.depth * 10 ) + 'px'}">
-                                    <el-input v-if="scope.row.editing" v-model="scope.row.title" :focus="scope.row.inputFocus" @keyup.enter.native="onRowCompleteEdit(scope.row)" placeholder="请输入标题"></el-input>
+                                    <el-input v-if="scope.row.editing" v-model="scope.row.typingTitle" :focus="scope.row.inputFocus" @keyup.enter.native="onRowCompleteEdit(scope.row)" placeholder="请输入标题"></el-input>
                                     <span v-if="!scope.row.editing">{{scope.row.title}}</span>
                                 </div>
                             </template>
@@ -101,7 +101,7 @@
                             <template scope="scope" style="width: 100px">
                                 <el-button v-if="!scope.row.editing" @click="onRowEdit(scope.row)" size="small">编辑</el-button>
                                 <el-button v-if="scope.row.editing" @click="onRowCompleteEdit(scope.row)" size="small" type="primary">确认</el-button>
-                                <el-button v-if="scope.row.editing" @click="onRowCancelEdit(scope.row)" size="small">取消</el-button>
+                                <el-button v-if="scope.row.editing" @click="onRowCancelEdit(scope.$index, scope.row)" size="small">取消</el-button>
                                 <el-button v-if="!scope.row.isResource" @click="onAddChild(scope.$index, scope.row)" size="small">添加子节点</el-button>
                                 <el-button v-if="!scope.row.isResource" @click="onAttachResource(scope.$index, scope.row)" size="small">挂载资源</el-button>
                             </template>
@@ -223,7 +223,6 @@
         },
 
         mounted() {
-            console.debug('here2')
         },
 
 
@@ -306,12 +305,15 @@
             onRowCompleteEdit(row) {
                 row.editing = false
                 row.inputFocus = false
-                console.debug(row)
+                row.title = row.typingTitle
             },
 
-            onRowCancelEdit(row) {
+            onRowCancelEdit(index, row) {
                 row.editing = false
                 row.inputFocus = false
+
+                if (!row.id && row.title == '')
+                    this.form.tableOfContents.splice(index, 1)
             },
 
             onRowEdit(row) {
@@ -371,28 +373,18 @@
             },
 
             async onSubmit() {
-                console.debug('button click of course create')
-
-                // const tocTransfer = new TocTransfer()
-                // const toc = tocTransfer.toTree(this.form.toc)
-
-                const assembler = new TableOfContentDTOAssembler()
-                    , toc = assembler.toTableOfContentDTOList(
-                        this.form.tableOfContents
-                      )
 
                 const course = {
                     title: this.form.title,
-                    description: this.form.description,
-                    toc: toc
+                    description: this.form.description
                 }
 
                 this.loading = true
                 try {
-                    await this.$http.post('/api/course', course)
+                    await this.$http.put(`/api/course/${this.$route.params.id}`, course)
                 } catch (e) {
                     console.error(e.message)
-                    this.$message.error('创建课程失败')
+                    this.$message.error('编辑课程失败')
                 }
                 this.loading = false
                 console.debug(response)

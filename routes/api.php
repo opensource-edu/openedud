@@ -20,5 +20,7 @@ use Illuminate\Http\Request;
 Route::post('/resource/uploader', 'ResourceController@uploader');
 Route::put('/resource/{id}/status', 'ResourceController@changeStatus');
 Route::get('/courses', 'CourseController@fetchList');
+
+Route::put('/course/{id}', 'CourseController@storage');
 Route::get('/course/{id}', 'CourseController@fetchOne');
 Route::put('/course', 'CourseController@storage');

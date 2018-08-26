@@ -25,9 +25,13 @@ class CourseController
         $this->courseFactory = new CourseFactory();
     }
 
-    public function storage(Request $request)
+    public function storage(Request $request, $id = null)
     {
-        return $this->courseService->storage($request->json()->all());
+        $course = $request->json()->all();
+        if ($id) {
+            $course['id'] = (int)$id;
+        }
+        return $this->courseService->storage($course);
     }
 
     public function fetchList()

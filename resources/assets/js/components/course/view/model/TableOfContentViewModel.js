@@ -7,5 +7,7 @@ export default class TableOfContentViewModel {
         this.inputFocus = false
         this.resource = resource
         this.isResource = null != resource
+
+        this.typingTitle = title
     }
 }
