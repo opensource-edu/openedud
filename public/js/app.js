@@ -28864,19 +28864,19 @@ module.exports = __webpack_require__(209);
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(211)
+  __webpack_require__(241)
 }
 var normalizeComponent = __webpack_require__(15)
 /* script */
 var __vue_script__ = __webpack_require__(215)
 /* template */
-var __vue_template__ = __webpack_require__(220)
+var __vue_template__ = __webpack_require__(243)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
 var __vue_styles__ = injectStyle
 /* scopeId */
-var __vue_scopeId__ = null
+var __vue_scopeId__ = "data-v-04f9991f"
 /* moduleIdentifier (server only) */
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
@@ -28961,7 +28961,7 @@ Vue.use(_vueRouter2.default);
 Vue.use(VueResource);
 
 var router = new _vueRouter2.default({
-    routes: [{ path: '/', component: __webpack_require__(204) }, { path: '/course', component: __webpack_require__(207) }, { path: '/course/add', component: __webpack_require__(79) }]
+    routes: [{ path: '/', component: __webpack_require__(204) }, { path: '/course', component: __webpack_require__(207) }, { path: '/course/:id/edit', component: __webpack_require__(224) }, { path: '/course/add', component: __webpack_require__(79) }]
 });
 
 var app = new Vue({
@@ -100231,8 +100231,10 @@ exports.default = {
             console.log('submit!');
         },
         onClickAddNewCourse: function onClickAddNewCourse() {
-
             this.$router.push('/course/add');
+        },
+        onClickEdit: function onClickEdit(course) {
+            this.$router.push();
         }
     }
 };
@@ -101012,46 +101014,8 @@ if (hadRuntime) {
 
 
 /***/ }),
-/* 211 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(212);
-if(typeof content === 'string') content = [[module.i, content, '']];
-if(content.locals) module.exports = content.locals;
-// add the styles to the DOM
-var update = __webpack_require__(213)("186bd560", content, false, {});
-// Hot Module Replacement
-if(false) {
- // When the styles change, update the <style> tags
- if(!content.locals) {
-   module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-04f9991f\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./AddCourse.vue", function() {
-     var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-04f9991f\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./AddCourse.vue");
-     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-     update(newContent);
-   });
- }
- // When the module is disposed, remove the <style> tags
- module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 212 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(70)(false);
-// imports
-
-
-// module
-exports.push([module.i, "\n.avatar-uploader .el-upload {\n    border: 1px dashed #d9d9d9;\n    border-radius: 6px;\n    cursor: pointer;\n    position: relative;\n    overflow: hidden;\n}\n.avatar-uploader .el-upload:hover {\n    border-color: #409EFF;\n}\n.avatar-uploader-icon {\n    font-size: 28px;\n    color: #8c939d;\n    width: 178px;\n    height: 178px;\n    line-height: 178px;\n    text-align: center;\n}\n.avatar {\n    width: 178px;\n    height: 178px;\n    display: block;\n}\n", ""]);
-
-// exports
-
-
-/***/ }),
+/* 211 */,
+/* 212 */,
 /* 213 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -101323,6 +101287,634 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _CourseForm = __webpack_require__(228);
+
+var _CourseForm2 = _interopRequireDefault(_CourseForm);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    components: {
+        CourseForm: _CourseForm2.default
+    },
+
+    created: function created() {}
+}; //
+//
+//
+//
+
+/***/ }),
+/* 216 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var TocTransfer = function () {
+    function TocTransfer() {
+        _classCallCheck(this, TocTransfer);
+    }
+
+    _createClass(TocTransfer, [{
+        key: "toFlat",
+        value: function toFlat(nodes) {
+            var walk = function walk(nodes) {
+                var flat = [];
+                nodes.forEach(function (node) {
+                    flat.push(node);
+                    if (node.children && node.children.length > 0) {
+                        flat = flat.concat(walk(node.children));
+                    }
+                });
+                return flat;
+            };
+            return walk(nodes);
+        }
+    }]);
+
+    return TocTransfer;
+}();
+
+exports.default = TocTransfer;
+
+/***/ }),
+/* 217 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(15)
+/* script */
+var __vue_script__ = __webpack_require__(218)
+/* template */
+var __vue_template__ = __webpack_require__(219)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/course/ResourceChoiceComponent.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-71673b31", Component.options)
+  } else {
+    hotAPI.reload("data-v-71673b31", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 218 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+exports.default = {
+    data: function data() {},
+
+
+    methods: {}
+};
+
+/***/ }),
+/* 219 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "el-upload",
+    {
+      staticClass: "upload-demo",
+      attrs: {
+        drag: "",
+        action: "https://jsonplaceholder.typicode.com/posts/",
+        multiple: ""
+      }
+    },
+    [
+      _c("i", { staticClass: "el-icon-upload" }),
+      _vm._v(" "),
+      _c("div", { staticClass: "el-upload__text" }, [
+        _vm._v("将文件拖到此处，或"),
+        _c("em", [_vm._v("点击上传")])
+      ]),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "el-upload__tip", attrs: { slot: "tip" }, slot: "tip" },
+        [_vm._v("只能上传jpg/png文件，且不超过500kb")]
+      )
+    ]
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-71673b31", module.exports)
+  }
+}
+
+/***/ }),
+/* 220 */,
+/* 221 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "el-container",
+    [
+      _c(
+        "el-row",
+        [
+          _c(
+            "el-col",
+            [
+              _c(
+                "el-dialog",
+                {
+                  attrs: {
+                    title: "添加课程",
+                    visible: _vm.courseDialogVisible,
+                    width: "60%",
+                    center: ""
+                  },
+                  on: {
+                    "update:visible": function($event) {
+                      _vm.courseDialogVisible = $event
+                    }
+                  }
+                },
+                [_c("AddCourse")],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "el-row",
+                { attrs: { type: "flex" } },
+                [
+                  _c(
+                    "el-col",
+                    [
+                      _c(
+                        "el-button",
+                        {
+                          attrs: { type: "primary", size: "small" },
+                          on: {
+                            click: function($event) {
+                              _vm.onClickAddNewCourse()
+                            }
+                          }
+                        },
+                        [_vm._v("添加新课程")]
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "el-row",
+                [
+                  _c(
+                    "el-col",
+                    [
+                      _c(
+                        "el-table",
+                        {
+                          staticStyle: { width: "100%" },
+                          attrs: { data: _vm.courses, border: "" }
+                        },
+                        [
+                          _c("el-table-column", {
+                            attrs: {
+                              prop: "title",
+                              label: "课程名字",
+                              width: "500"
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c("el-table-column", {
+                            attrs: {
+                              prop: "created_at",
+                              label: "日期",
+                              width: "180"
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c("el-table-column", {
+                            scopedSlots: _vm._u([
+                              {
+                                key: "default",
+                                fn: function(scope) {
+                                  return [
+                                    _c(
+                                      "el-button",
+                                      {
+                                        attrs: { size: "small" },
+                                        on: {
+                                          click: function($event) {
+                                            _vm.onClickEdit(scope.row)
+                                          }
+                                        }
+                                      },
+                                      [_vm._v("编辑")]
+                                    )
+                                  ]
+                                }
+                              }
+                            ])
+                          })
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-bb1ec334", module.exports)
+  }
+}
+
+/***/ }),
+/* 222 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 223 */,
+/* 224 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(225)
+}
+var normalizeComponent = __webpack_require__(15)
+/* script */
+var __vue_script__ = __webpack_require__(227)
+/* template */
+var __vue_template__ = __webpack_require__(233)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = "data-v-9c8e745c"
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/course/CourseEdit.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-9c8e745c", Component.options)
+  } else {
+    hotAPI.reload("data-v-9c8e745c", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 225 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(226);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(213)("7bf4898a", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-9c8e745c\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./CourseEdit.vue", function() {
+     var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-9c8e745c\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./CourseEdit.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 226 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(70)(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 227 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _regenerator = __webpack_require__(78);
+
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
+var _CourseForm = __webpack_require__(228);
+
+var _CourseForm2 = _interopRequireDefault(_CourseForm);
+
+var _CourseServiceFacade = __webpack_require__(234);
+
+var _CourseServiceFacade2 = _interopRequireDefault(_CourseServiceFacade);
+
+var _CourseRemote = __webpack_require__(237);
+
+var _CourseRemote2 = _interopRequireDefault(_CourseRemote);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; } //
+//
+//
+//
+//
+//
+//
+
+exports.default = {
+    components: {
+        CourseForm: _CourseForm2.default
+    },
+
+    created: function () {
+        var _ref = _asyncToGenerator( /*#__PURE__*/_regenerator2.default.mark(function _callee() {
+            var remote;
+            return _regenerator2.default.wrap(function _callee$(_context) {
+                while (1) {
+                    switch (_context.prev = _context.next) {
+                        case 0:
+                            remote = new _CourseRemote2.default(this.$http);
+
+                            this.serviceFacade = new _CourseServiceFacade2.default(remote);
+
+                            _context.next = 4;
+                            return this.serviceFacade.fetchOne(this.$route.params.id);
+
+                        case 4:
+                            this.form = _context.sent;
+
+                        case 5:
+                        case "end":
+                            return _context.stop();
+                    }
+                }
+            }, _callee, this);
+        }));
+
+        function created() {
+            return _ref.apply(this, arguments);
+        }
+
+        return created;
+    }(),
+
+
+    methods: {
+        onTableOfContentEditing: function () {
+            var _ref2 = _asyncToGenerator( /*#__PURE__*/_regenerator2.default.mark(function _callee2(tableOfContent) {
+                return _regenerator2.default.wrap(function _callee2$(_context2) {
+                    while (1) {
+                        switch (_context2.prev = _context2.next) {
+                            case 0:
+                                return _context2.abrupt("return", new Promise(function (resolve, reject) {
+                                    setTimeout(function () {
+                                        resolve();
+                                    }, 1000);
+                                }));
+
+                            case 1:
+                            case "end":
+                                return _context2.stop();
+                        }
+                    }
+                }, _callee2, this);
+            }));
+
+            function onTableOfContentEditing(_x) {
+                return _ref2.apply(this, arguments);
+            }
+
+            return onTableOfContentEditing;
+        }()
+    }
+};
+
+/***/ }),
+/* 228 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(229)
+}
+var normalizeComponent = __webpack_require__(15)
+/* script */
+var __vue_script__ = __webpack_require__(231)
+/* template */
+var __vue_template__ = __webpack_require__(232)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/course/CourseForm.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-6e77778c", Component.options)
+  } else {
+    hotAPI.reload("data-v-6e77778c", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 229 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(230);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(213)("0a77a8f8", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-6e77778c\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./CourseForm.vue", function() {
+     var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-6e77778c\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./CourseForm.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 230 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(70)(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.avatar-uploader .el-upload {\n    border: 1px dashed #d9d9d9;\n    border-radius: 6px;\n    cursor: pointer;\n    position: relative;\n    overflow: hidden;\n}\n.avatar-uploader .el-upload:hover {\n    border-color: #409EFF;\n}\n.avatar-uploader-icon {\n    font-size: 28px;\n    color: #8c939d;\n    width: 178px;\n    height: 178px;\n    line-height: 178px;\n    text-align: center;\n}\n.avatar {\n    width: 178px;\n    height: 178px;\n    display: block;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 231 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _regenerator = __webpack_require__(78);
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
@@ -101334,6 +101926,14 @@ var _TocTransfer2 = _interopRequireDefault(_TocTransfer);
 var _ResourceChoiceComponent = __webpack_require__(217);
 
 var _ResourceChoiceComponent2 = _interopRequireDefault(_ResourceChoiceComponent);
+
+var _TableOfContentViewModel = __webpack_require__(238);
+
+var _TableOfContentViewModel2 = _interopRequireDefault(_TableOfContentViewModel);
+
+var _TableOfContentDTOAssembler = __webpack_require__(239);
+
+var _TableOfContentDTOAssembler2 = _interopRequireDefault(_TableOfContentDTOAssembler);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -101484,6 +102084,8 @@ exports.default = {
         'resource-choice': _ResourceChoiceComponent2.default
     },
 
+    props: ['id', 'tableOfContentEditing'],
+
     data: function data() {
         return {
             resourceVisible: false,
@@ -101507,13 +102109,12 @@ exports.default = {
             policy: '',
             uploadingResource: null,
             activeName: "tableOfContents",
-            test: 10,
             loading: false,
             form: {
                 title: 'test course',
                 description: 'test course description',
                 imageURL: '',
-                toc: [{
+                tableOfContents: [{
                     title: "Chapter 1",
                     editing: false,
                     inputFocus: false,
@@ -101536,6 +102137,30 @@ exports.default = {
             }
         };
     },
+    created: function () {
+        var _ref = _asyncToGenerator( /*#__PURE__*/_regenerator2.default.mark(function _callee() {
+            return _regenerator2.default.wrap(function _callee$(_context) {
+                while (1) {
+                    switch (_context.prev = _context.next) {
+                        case 0:
+
+                            console.debug(this.tableOfContentEditing);
+
+                        case 1:
+                        case 'end':
+                            return _context.stop();
+                    }
+                }
+            }, _callee, this);
+        }));
+
+        function created() {
+            return _ref.apply(this, arguments);
+        }
+
+        return created;
+    }(),
+    mounted: function mounted() {},
 
 
     methods: {
@@ -101546,7 +102171,8 @@ exports.default = {
                 title: "123123",
                 editing: false,
                 inputFocus: false,
-                isResource: true
+                isResource: true,
+                resource_id: 40
             });
 
             this.resourceVisible = false;
@@ -101559,15 +102185,15 @@ exports.default = {
             console.debug(fileList);
         },
         onBeforeUpload: function () {
-            var _ref = _asyncToGenerator( /*#__PURE__*/_regenerator2.default.mark(function _callee(file) {
+            var _ref2 = _asyncToGenerator( /*#__PURE__*/_regenerator2.default.mark(function _callee2(file) {
                 var response;
-                return _regenerator2.default.wrap(function _callee$(_context) {
+                return _regenerator2.default.wrap(function _callee2$(_context2) {
                     while (1) {
-                        switch (_context.prev = _context.next) {
+                        switch (_context2.prev = _context2.next) {
                             case 0:
                                 console.debug(file);
 
-                                _context.next = 3;
+                                _context2.next = 3;
                                 return this.$http.post('/api/resource/uploader', {
                                     raw_name: file.name,
                                     size: file.size,
@@ -101575,7 +102201,7 @@ exports.default = {
                                 });
 
                             case 3:
-                                response = _context.sent;
+                                response = _context2.sent;
 
                                 console.debug(response);
                                 this.uploadURL = response.data.upload_url;
@@ -101587,24 +102213,24 @@ exports.default = {
 
                             case 11:
                             case 'end':
-                                return _context.stop();
+                                return _context2.stop();
                         }
                     }
-                }, _callee, this);
+                }, _callee2, this);
             }));
 
             function onBeforeUpload(_x) {
-                return _ref.apply(this, arguments);
+                return _ref2.apply(this, arguments);
             }
 
             return onBeforeUpload;
         }(),
         uploadHttpRequest: function () {
-            var _ref2 = _asyncToGenerator( /*#__PURE__*/_regenerator2.default.mark(function _callee2(request) {
+            var _ref3 = _asyncToGenerator( /*#__PURE__*/_regenerator2.default.mark(function _callee3(request) {
                 var formData;
-                return _regenerator2.default.wrap(function _callee2$(_context2) {
+                return _regenerator2.default.wrap(function _callee3$(_context3) {
                     while (1) {
-                        switch (_context2.prev = _context2.next) {
+                        switch (_context3.prev = _context3.next) {
                             case 0:
                                 formData = new FormData();
 
@@ -101615,28 +102241,28 @@ exports.default = {
                                 formData.append('policy', this.policy);
                                 formData.append('signature', this.signature);
                                 console.debug(this.uploadURL);
-                                _context2.next = 9;
+                                _context3.next = 9;
                                 return this.$http.post(this.uploadURL, formData);
 
                             case 9:
                                 console.debug('uploaded');
                                 console.debug(this.uploadingResource);
 
-                                _context2.next = 13;
+                                _context3.next = 13;
                                 return this.$http.put('/api/resource/' + this.uploadingResource.id + '/status', {
                                     'status': 'available'
                                 });
 
                             case 13:
                             case 'end':
-                                return _context2.stop();
+                                return _context3.stop();
                         }
                     }
-                }, _callee2, this);
+                }, _callee3, this);
             }));
 
             function uploadHttpRequest(_x2) {
-                return _ref2.apply(this, arguments);
+                return _ref3.apply(this, arguments);
             }
 
             return uploadHttpRequest;
@@ -101646,133 +102272,133 @@ exports.default = {
             this.chooseAttachTOCIndex = index;
             this.resourceVisible = true;
         },
-        onRowCompleteEdit: function onRowCompleteEdit(row) {
+        onRowCompleteEdit: function () {
+            var _ref4 = _asyncToGenerator( /*#__PURE__*/_regenerator2.default.mark(function _callee4(row) {
+                var _this = this;
+
+                return _regenerator2.default.wrap(function _callee4$(_context4) {
+                    while (1) {
+                        switch (_context4.prev = _context4.next) {
+                            case 0:
+                                // row.editing = false
+                                row.inputFocus = false;
+                                row.title = row.typingTitle;
+                                this.loading = true;
+                                //
+                                _context4.next = 5;
+                                return this.tableOfContentEditing(row);
+
+                            case 5:
+                                // console.debug(123)
+
+                                setTimeout(function () {
+                                    _this.loading = false;
+                                    // this.$set(row, 'loading', false)
+                                }, 1000);
+
+                                this.loading = false;
+
+                            case 7:
+                            case 'end':
+                                return _context4.stop();
+                        }
+                    }
+                }, _callee4, this);
+            }));
+
+            function onRowCompleteEdit(_x3) {
+                return _ref4.apply(this, arguments);
+            }
+
+            return onRowCompleteEdit;
+        }(),
+        onRowCancelEdit: function onRowCancelEdit(index, row) {
             row.editing = false;
             row.inputFocus = false;
-            console.debug(row);
-        },
-        onRowCancelEdit: function onRowCancelEdit(row) {
-            row.editing = false;
-            row.inputFocus = false;
+
+            if (!row.id && row.title == '') this.form.tableOfContents.splice(index, 1);
         },
         onRowEdit: function onRowEdit(row) {
             console.debug(row);
             row.editing = true;
             row.inputFocus = true;
         },
-        addChild: function addChild(index, parent, row) {
-            var foundIndex = -1;
-            console.debug('select index ' + index);
+        addChild: function addChild(index, parent, tableOfContent) {
+            var findPosition = function findPosition(index, parent, tableOfContents) {
+                var foundIndex = -1;
 
-            for (var i = index + 1, size = this.form.toc.length; i < size; i++) {
-                var found = this.form.toc[i];
-                console.debug('search index ' + i + ' depth ' + found.depth + ' parent ' + parent.depth + ' title ' + found.title);
-
-                if (parent.depth === found.depth) {
-                    foundIndex = i;
-                    break;
-                }
-
-                if (parent.depth == found.depth + 1) {
-                    foundIndex = i;
-                    break;
-                }
-            }
-
-            if (-1 === foundIndex) {
-                foundIndex = this.form.toc.length;
-            }
-
-            console.debug('found index ' + foundIndex);
-
-            row.depth = parent.depth + 1;
-
-            this.form.toc.splice(foundIndex, 0, row);
-        },
-        onAddChild: function onAddChild(index, parent) {
-            var foundIndex = -1;
-
-            if (-1 === foundIndex) {
-                for (var i = index + 1, size = this.form.toc.length; i < size; i++) {
-                    var found = this.form.toc[i];
-                    console.debug('search index ' + i + ' depth ' + found.depth + ' parent ' + parent.depth + ' title ' + found.title);
+                for (var i = index + 1, size = tableOfContents.length; i < size; i++) {
+                    var found = tableOfContents[i];
 
                     if (parent.depth === found.depth) {
-                        console.debug('search complete');
                         foundIndex = i;
                         break;
                     }
 
-                    if (parent.depth == found.depth + 1) {
+                    console.debug(found.depth);
+                    console.debug(parent.depth);
+
+                    if (parent.depth > found.depth) {
                         foundIndex = i;
                         break;
                     }
                 }
-            }
 
-            if (-1 === foundIndex) {
-                foundIndex = this.form.toc.length;
-            }
+                if (-1 === foundIndex) {
+                    foundIndex = tableOfContents.length;
+                }
 
-            console.debug('found index ' + foundIndex);
+                return foundIndex;
+            };
 
-            this.form.toc.splice(foundIndex, 0, {
-                title: "",
-                editing: true,
-                inputFocus: true,
-                depth: parent.depth + 1,
-                isResource: false,
-                parent: parent.id
-            });
+            this.form.tableOfContents.splice(findPosition(index, parent, this.form.tableOfContents), 0, tableOfContent);
+        },
+        onAddChild: function onAddChild(index, parent) {
+            this.addChild(index, parent, new _TableOfContentViewModel2.default(null, "", parent.depth + 1, true, null));
         },
         onSubmit: function () {
-            var _ref3 = _asyncToGenerator( /*#__PURE__*/_regenerator2.default.mark(function _callee3() {
-                var tocTransfer, toc, course;
-                return _regenerator2.default.wrap(function _callee3$(_context3) {
+            var _ref5 = _asyncToGenerator( /*#__PURE__*/_regenerator2.default.mark(function _callee5() {
+                var course;
+                return _regenerator2.default.wrap(function _callee5$(_context5) {
                     while (1) {
-                        switch (_context3.prev = _context3.next) {
+                        switch (_context5.prev = _context5.next) {
                             case 0:
-                                console.debug('button click of course create');
-
-                                tocTransfer = new _TocTransfer2.default();
-                                toc = tocTransfer.toTree(this.form.toc);
                                 course = {
                                     title: this.form.title,
-                                    description: this.form.description,
-                                    toc: toc
+                                    description: this.form.description
                                 };
 
 
                                 this.loading = true;
-                                _context3.prev = 5;
-                                _context3.next = 8;
-                                return this.$http.post('/api/course', course);
+                                _context5.prev = 2;
+                                _context5.next = 5;
+                                return this.$http.put('/api/course/' + this.$route.params.id, course);
 
-                            case 8:
-                                _context3.next = 14;
+                            case 5:
+                                _context5.next = 11;
                                 break;
 
-                            case 10:
-                                _context3.prev = 10;
-                                _context3.t0 = _context3['catch'](5);
+                            case 7:
+                                _context5.prev = 7;
+                                _context5.t0 = _context5['catch'](2);
 
-                                console.error(_context3.t0.message);
-                                this.$message.error('创建课程失败');
+                                console.error(_context5.t0.message);
+                                this.$message.error('编辑课程失败');
 
-                            case 14:
+                            case 11:
                                 this.loading = false;
                                 console.debug(response);
 
-                            case 16:
+                            case 13:
                             case 'end':
-                                return _context3.stop();
+                                return _context5.stop();
                         }
                     }
-                }, _callee3, this, [[5, 10]]);
+                }, _callee5, this, [[2, 7]]);
             }));
 
             function onSubmit() {
-                return _ref3.apply(this, arguments);
+                return _ref5.apply(this, arguments);
             }
 
             return onSubmit;
@@ -101797,258 +102423,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 216 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var TocTransfer = function () {
-    function TocTransfer() {
-        _classCallCheck(this, TocTransfer);
-    }
-
-    _createClass(TocTransfer, [{
-        key: "toTree",
-        value: function toTree(tableOfContents) {
-            var contents = [],
-                previous = null;
-
-            var _iteratorNormalCompletion = true;
-            var _didIteratorError = false;
-            var _iteratorError = undefined;
-
-            try {
-                for (var _iterator = tableOfContents[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                    var content = _step.value;
-
-                    var isChildByPrevious = false,
-                        isSibilingByPrevious = false;
-
-                    var node = {
-                        id: content.id,
-                        title: content.title,
-                        parent: null,
-                        children: [],
-                        depth: content.depth
-                    };
-
-                    if (previous === null) {
-                        previous = node;
-                        contents.push(node);
-                        continue;
-                    }
-
-                    if (content.depth === previous.depth) {
-                        isSibilingByPrevious = true;
-                    } else if (content.depth > previous.depth) {
-                        isChildByPrevious = true;
-                    } else if (content.depth < previous.depth) {
-                        contents.push(node);
-                    }
-
-                    if (isChildByPrevious) {
-                        node.parent = previous;
-                        previous.children.push(node);
-                    }
-
-                    if (isSibilingByPrevious) {
-                        if (previous.parent) {
-                            previous.parent.children.push(node);
-                        } else {
-                            contents.push(node);
-                        }
-                    }
-
-                    previous = node;
-                }
-            } catch (err) {
-                _didIteratorError = true;
-                _iteratorError = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion && _iterator.return) {
-                        _iterator.return();
-                    }
-                } finally {
-                    if (_didIteratorError) {
-                        throw _iteratorError;
-                    }
-                }
-            }
-
-            var clearTree = function clearTree(tree) {
-                var _iteratorNormalCompletion2 = true;
-                var _didIteratorError2 = false;
-                var _iteratorError2 = undefined;
-
-                try {
-                    for (var _iterator2 = tree[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                        var node = _step2.value;
-
-                        if (node.children.length > 0) {
-                            clearTree(node.children);
-                        }
-
-                        delete node.parent;
-                    }
-                } catch (err) {
-                    _didIteratorError2 = true;
-                    _iteratorError2 = err;
-                } finally {
-                    try {
-                        if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                            _iterator2.return();
-                        }
-                    } finally {
-                        if (_didIteratorError2) {
-                            throw _iteratorError2;
-                        }
-                    }
-                }
-            };
-
-            clearTree(contents);
-
-            return contents;
-        }
-    }]);
-
-    return TocTransfer;
-}();
-
-exports.default = TocTransfer;
-
-/***/ }),
-/* 217 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(15)
-/* script */
-var __vue_script__ = __webpack_require__(218)
-/* template */
-var __vue_template__ = __webpack_require__(219)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/assets/js/components/course/ResourceChoiceComponent.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-71673b31", Component.options)
-  } else {
-    hotAPI.reload("data-v-71673b31", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 218 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-exports.default = {
-    data: function data() {},
-
-
-    methods: {}
-};
-
-/***/ }),
-/* 219 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "el-upload",
-    {
-      staticClass: "upload-demo",
-      attrs: {
-        drag: "",
-        action: "https://jsonplaceholder.typicode.com/posts/",
-        multiple: ""
-      }
-    },
-    [
-      _c("i", { staticClass: "el-icon-upload" }),
-      _vm._v(" "),
-      _c("div", { staticClass: "el-upload__text" }, [
-        _vm._v("将文件拖到此处，或"),
-        _c("em", [_vm._v("点击上传")])
-      ]),
-      _vm._v(" "),
-      _c(
-        "div",
-        { staticClass: "el-upload__tip", attrs: { slot: "tip" }, slot: "tip" },
-        [_vm._v("只能上传jpg/png文件，且不超过500kb")]
-      )
-    ]
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-71673b31", module.exports)
-  }
-}
-
-/***/ }),
-/* 220 */
+/* 232 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -102372,7 +102747,9 @@ var render = function() {
                     [
                       _c(
                         "el-table",
-                        { attrs: { data: _vm.form.toc, border: "" } },
+                        {
+                          attrs: { data: _vm.form.tableOfContents, border: "" }
+                        },
                         [
                           _c("el-table-column", {
                             attrs: { prop: "title", label: "标题" },
@@ -102416,15 +102793,16 @@ var render = function() {
                                                 }
                                               },
                                               model: {
-                                                value: scope.row.title,
+                                                value: scope.row.typingTitle,
                                                 callback: function($$v) {
                                                   _vm.$set(
                                                     scope.row,
-                                                    "title",
+                                                    "typingTitle",
                                                     $$v
                                                   )
                                                 },
-                                                expression: "scope.row.title"
+                                                expression:
+                                                  "scope.row.typingTitle"
                                               }
                                             })
                                           : _vm._e(),
@@ -102471,7 +102849,8 @@ var render = function() {
                                           {
                                             attrs: {
                                               size: "small",
-                                              type: "primary"
+                                              type: "primary",
+                                              loading: scope.row.loading
                                             },
                                             on: {
                                               click: function($event) {
@@ -102490,7 +102869,10 @@ var render = function() {
                                             attrs: { size: "small" },
                                             on: {
                                               click: function($event) {
-                                                _vm.onRowCancelEdit(scope.row)
+                                                _vm.onRowCancelEdit(
+                                                  scope.$index,
+                                                  scope.row
+                                                )
                                               }
                                             }
                                           },
@@ -102561,135 +102943,24 @@ module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-04f9991f", module.exports)
+    require("vue-hot-reload-api")      .rerender("data-v-6e77778c", module.exports)
   }
 }
 
 /***/ }),
-/* 221 */
+/* 233 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "el-container",
-    [
-      _c(
-        "el-row",
-        [
-          _c(
-            "el-col",
-            [
-              _c(
-                "el-dialog",
-                {
-                  attrs: {
-                    title: "添加课程",
-                    visible: _vm.courseDialogVisible,
-                    width: "60%",
-                    center: ""
-                  },
-                  on: {
-                    "update:visible": function($event) {
-                      _vm.courseDialogVisible = $event
-                    }
-                  }
-                },
-                [_c("AddCourse")],
-                1
-              ),
-              _vm._v(" "),
-              _c(
-                "el-row",
-                { attrs: { type: "flex" } },
-                [
-                  _c(
-                    "el-col",
-                    [
-                      _c(
-                        "el-button",
-                        {
-                          attrs: { type: "primary", size: "small" },
-                          on: {
-                            click: function($event) {
-                              _vm.onClickAddNewCourse()
-                            }
-                          }
-                        },
-                        [_vm._v("添加新课程")]
-                      )
-                    ],
-                    1
-                  )
-                ],
-                1
-              ),
-              _vm._v(" "),
-              _c(
-                "el-row",
-                [
-                  _c(
-                    "el-col",
-                    [
-                      _c(
-                        "el-table",
-                        {
-                          staticStyle: { width: "100%" },
-                          attrs: { data: _vm.courses, border: "" }
-                        },
-                        [
-                          _c("el-table-column", {
-                            attrs: {
-                              prop: "title",
-                              label: "课程名字",
-                              width: "500"
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("el-table-column", {
-                            attrs: {
-                              prop: "created_at",
-                              label: "日期",
-                              width: "180"
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("el-table-column", {
-                            scopedSlots: _vm._u([
-                              {
-                                key: "default",
-                                fn: function(scope) {
-                                  return [
-                                    _c(
-                                      "el-button",
-                                      { attrs: { size: "small" } },
-                                      [_vm._v("编辑")]
-                                    )
-                                  ]
-                                }
-                              }
-                            ])
-                          })
-                        ],
-                        1
-                      )
-                    ],
-                    1
-                  )
-                ],
-                1
-              )
-            ],
-            1
-          )
-        ],
-        1
-      )
-    ],
-    1
-  )
+  return _c("CourseForm", {
+    attrs: {
+      "table-of-content-editing": _vm.onTableOfContentEditing,
+      id: this.$route.params.id
+    }
+  })
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -102697,15 +102968,491 @@ module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-bb1ec334", module.exports)
+    require("vue-hot-reload-api")      .rerender("data-v-9c8e745c", module.exports)
   }
 }
 
 /***/ }),
-/* 222 */
-/***/ (function(module, exports) {
+/* 234 */
+/***/ (function(module, exports, __webpack_require__) {
 
-// removed by extract-text-webpack-plugin
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _regenerator = __webpack_require__(78);
+
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _CourseViewModelAssembler = __webpack_require__(235);
+
+var _CourseViewModelAssembler2 = _interopRequireDefault(_CourseViewModelAssembler);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var CourseServiceFacade = function () {
+    function CourseServiceFacade(remote) {
+        _classCallCheck(this, CourseServiceFacade);
+
+        this.remote = remote;
+        this.assembler = new _CourseViewModelAssembler2.default();
+    }
+
+    _createClass(CourseServiceFacade, [{
+        key: 'fetchOne',
+        value: function () {
+            var _ref = _asyncToGenerator( /*#__PURE__*/_regenerator2.default.mark(function _callee(id) {
+                var course, viewModel;
+                return _regenerator2.default.wrap(function _callee$(_context) {
+                    while (1) {
+                        switch (_context.prev = _context.next) {
+                            case 0:
+                                _context.next = 2;
+                                return this.remote.fetchOne(id);
+
+                            case 2:
+                                course = _context.sent;
+                                viewModel = this.assembler.toViewModel(course);
+                                return _context.abrupt('return', viewModel);
+
+                            case 5:
+                            case 'end':
+                                return _context.stop();
+                        }
+                    }
+                }, _callee, this);
+            }));
+
+            function fetchOne(_x) {
+                return _ref.apply(this, arguments);
+            }
+
+            return fetchOne;
+        }()
+    }]);
+
+    return CourseServiceFacade;
+}();
+
+exports.default = CourseServiceFacade;
+
+/***/ }),
+/* 235 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _CourseViewModel = __webpack_require__(236);
+
+var _CourseViewModel2 = _interopRequireDefault(_CourseViewModel);
+
+var _TableOfContentViewModel = __webpack_require__(238);
+
+var _TableOfContentViewModel2 = _interopRequireDefault(_TableOfContentViewModel);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var CourseViewModelAssembler = function () {
+    function CourseViewModelAssembler() {
+        _classCallCheck(this, CourseViewModelAssembler);
+    }
+
+    _createClass(CourseViewModelAssembler, [{
+        key: "toViewModel",
+        value: function toViewModel(course) {
+            var viewModel = new _CourseViewModel2.default(course.id, course.title, course.description, this.toTableOfContentViewModelList(course.table_of_contents));
+
+            return viewModel;
+        }
+    }, {
+        key: "toTableOfContentViewModel",
+        value: function toTableOfContentViewModel(tableOfContent) {
+            return new _TableOfContentViewModel2.default(tableOfContent.id || 0, tableOfContent.title, parseInt(tableOfContent.depth));
+        }
+
+        // toResourceViewModel(resource) {
+        //     return new ResourceViewModel()
+        // }
+
+    }, {
+        key: "toTableOfContentViewModelList",
+        value: function toTableOfContentViewModelList(tableOfContents) {
+            var self = this;
+            var walk = function walk(nodes) {
+                var flat = [];
+                nodes.forEach(function (node) {
+
+                    flat.push(self.toTableOfContentViewModel(node));
+                    if (node.children && node.children.length > 0) {
+                        var children = walk(node.children);
+                        flat = flat.concat(children);
+                    }
+                });
+                return flat;
+            };
+            var vm = walk(tableOfContents);
+            return vm;
+        }
+    }, {
+        key: "toTableOfContents",
+        value: function toTableOfContents(tableOfContents) {
+            var contents = [],
+                previous = null;
+
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+                for (var _iterator = tableOfContents[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var content = _step.value;
+
+                    var isChildByPrevious = false,
+                        isSibilingByPrevious = false;
+
+                    var node = {
+                        id: content.id,
+                        title: content.title,
+                        parent: null,
+                        children: [],
+                        depth: content.depth
+                    };
+
+                    if (previous === null) {
+                        previous = node;
+                        contents.push(node);
+                        continue;
+                    }
+
+                    if (content.depth === previous.depth) {
+                        isSibilingByPrevious = true;
+                    } else if (content.depth > previous.depth) {
+                        isChildByPrevious = true;
+                    } else if (content.depth < previous.depth) {
+                        contents.push(node);
+                    }
+
+                    if (isChildByPrevious) {
+                        node.parent = previous;
+                        previous.children.push(node);
+                    }
+
+                    if (isSibilingByPrevious) {
+                        if (previous.parent) {
+                            previous.parent.children.push(node);
+                        } else {
+                            contents.push(node);
+                        }
+                    }
+
+                    previous = node;
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
+            }
+
+            return contents;
+        }
+    }]);
+
+    return CourseViewModelAssembler;
+}();
+
+exports.default = CourseViewModelAssembler;
+
+/***/ }),
+/* 236 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var CourseViewModel = function CourseViewModel(id, title, description, tableOfContents) {
+    _classCallCheck(this, CourseViewModel);
+
+    this.id = id;
+    this.title = title;
+    this.description = description;
+    this.tableOfContents = tableOfContents;
+};
+
+exports.default = CourseViewModel;
+
+/***/ }),
+/* 237 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _regenerator = __webpack_require__(78);
+
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var CourseRemote = function () {
+    function CourseRemote(http) {
+        _classCallCheck(this, CourseRemote);
+
+        this.http = http;
+    }
+
+    _createClass(CourseRemote, [{
+        key: "fetchOne",
+        value: function () {
+            var _ref = _asyncToGenerator( /*#__PURE__*/_regenerator2.default.mark(function _callee(id) {
+                var response;
+                return _regenerator2.default.wrap(function _callee$(_context) {
+                    while (1) {
+                        switch (_context.prev = _context.next) {
+                            case 0:
+                                _context.next = 2;
+                                return this.http.get("/api/course/" + id);
+
+                            case 2:
+                                response = _context.sent;
+                                return _context.abrupt("return", response.data);
+
+                            case 4:
+                            case "end":
+                                return _context.stop();
+                        }
+                    }
+                }, _callee, this);
+            }));
+
+            function fetchOne(_x) {
+                return _ref.apply(this, arguments);
+            }
+
+            return fetchOne;
+        }()
+    }]);
+
+    return CourseRemote;
+}();
+
+exports.default = CourseRemote;
+
+/***/ }),
+/* 238 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var TableOfContentViewModel = function TableOfContentViewModel(id, title, depth, editing, resource) {
+    _classCallCheck(this, TableOfContentViewModel);
+
+    this.id = id;
+    this.title = title;
+    this.depth = depth;
+    this.editing = editing;
+    this.inputFocus = false;
+    this.resource = resource;
+    this.isResource = null != resource;
+
+    this.typingTitle = title;
+};
+
+exports.default = TableOfContentViewModel;
+
+/***/ }),
+/* 239 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _TableOfContentDTO = __webpack_require__(240);
+
+var _TableOfContentDTO2 = _interopRequireDefault(_TableOfContentDTO);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var TableOfContentDTOAssembler = function () {
+    function TableOfContentDTOAssembler() {
+        _classCallCheck(this, TableOfContentDTOAssembler);
+    }
+
+    _createClass(TableOfContentDTOAssembler, [{
+        key: "toTableOfContentDTO",
+        value: function toTableOfContentDTO(tableOfContent) {}
+
+        /**
+         *
+         * @param tableOfContentList
+         * @return TableOfContentDTO
+         */
+
+    }, {
+        key: "toTableOfContentDTOList",
+        value: function toTableOfContentDTOList(tableOfContentList) {
+            var walk = function walk(tableOfContentList, parent) {
+                var tableOfContentDTOList = [];
+                tableOfContentList.forEach(function (tableOfContent) {
+
+                    var tableOfContentDTO = new _TableOfContentDTO2.default(tableOfContent.id, tableOfContent.title);
+                    tableOfContentDTOList.push(tableOfContentDTO);
+
+                    if (tableOfContent.children && tableOfContent.children.length > 0) {
+                        var children = walk(tableOfContent.children, tableOfContent);
+                        tableOfContentDTO.children = children;
+                    }
+                });
+                return tableOfContentDTOList;
+            };
+            return walk(tableOfContentList, null);
+        }
+    }]);
+
+    return TableOfContentDTOAssembler;
+}();
+
+exports.default = TableOfContentDTOAssembler;
+
+/***/ }),
+/* 240 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var TableOfContentDTO = function TableOfContentDTO(id, title, resourceId) {
+    _classCallCheck(this, TableOfContentDTO);
+
+    this.id = id;
+    this.title = title;
+    this.resource = resourceId;
+};
+
+exports.default = TableOfContentDTO;
+
+/***/ }),
+/* 241 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(242);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(213)("702db237", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-04f9991f\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./AddCourse.vue", function() {
+     var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-04f9991f\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./AddCourse.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 242 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(70)(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 243 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("CourseForm")
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-04f9991f", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);

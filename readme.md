@@ -24,3 +24,8 @@ Eduard是我在网络上的一个别名，希望在网上用另外一个身份�
 - 联系邮件 eduard.open.w@gmail.com
 - weibo [@imeduard](http://weibo.com/imeduard)
 - twitter [@1meduard](https://twitter.com/1meduard)
+
+LICESE
+=======
+
+[Apache 2.0 License](license.md)
