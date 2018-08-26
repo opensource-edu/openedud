@@ -21,4 +21,4 @@ Route::post('/resource/uploader', 'ResourceController@uploader');
 Route::put('/resource/{id}/status', 'ResourceController@changeStatus');
 Route::get('/courses', 'CourseController@fetchList');
 Route::get('/course/{id}', 'CourseController@fetchOne');
-Route::post('/course', 'CourseController@storage');
+Route::put('/course', 'CourseController@storage');

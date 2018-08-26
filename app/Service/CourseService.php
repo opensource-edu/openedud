@@ -26,17 +26,17 @@ class CourseService
         }
 
         foreach ($course['toc'] as $toc) {
-            $attached = isset($toc['id']);
+                $attached = isset($toc['id']);
 
-            // if attached and build tree
-            if ($attached) {
-                TableOfContent::rebuildTree(
-                    [$toc]
-                );
-            } else {
-                $tocModel = TableOfContent::create($toc);
-                $courseModel->tableOfContents()->attach($tocModel);
-            }
+                // if attached and build tree
+                if ($attached) {
+                    TableOfContent::rebuildTree(
+                        [$toc]
+                    );
+                } else {
+                    $tocModel = TableOfContent::create($toc);
+                    $courseModel->tableOfContents()->attach($tocModel);
+                }
         }
         $id = $courseModel->id;
 

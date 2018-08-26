@@ -18,7 +18,7 @@ class CourseFactory
                     ->with('resource')
                     ->descendantsAndSelf($content['id'])
                     ->toTree();
-                return $toc;
+                return $toc[0];
             },
             $course->tableOfContents->toArray()
         );

@@ -83,7 +83,7 @@
                     </el-form>
                 </el-tab-pane>
                 <el-tab-pane label="大纲" name="tableOfContents">
-                    <el-table :data="form.toc" border>
+                    <el-table :data="form.tableOfContents" border>
                         <el-table-column
                                 prop="title"
                                 label="标题">
@@ -142,6 +142,9 @@
 <script>
     import TocTransfer from '../../TocTransfer'
     import ResourceChoiceComponent from './ResourceChoiceComponent'
+    import CourseServiceFacade from "./CourseServiceFacade";
+    import CourseRemote from "./CourseRemote";
+    import TableOfContentViewModel from "./view/model/TableOfContentViewModel";
 
     export default {
         components: {
@@ -211,9 +214,11 @@
         },
 
         async created() {
-            console.debug('here')
-            const response = await this.$http.get(`/api/course/${this.id}`)
-            console.debug(response)
+
+            const remote = new CourseRemote(this.$http)
+            this.serviceFacade = new CourseServiceFacade(remote)
+
+            this.form = await this.serviceFacade.fetchOne(this.$route.params.id)
         },
 
         mounted() {
@@ -315,72 +320,53 @@
             },
 
 
-            addChild(index, parent, row) {
-                var foundIndex = -1
-                console.debug(`select index ${index}`)
+            addChild(index, parent, tableOfContent) {
+                const findPosition = function(index, parent, tableOfContents) {
+                    var foundIndex = -1
 
+                    for (var i = index + 1, size = tableOfContents.length; i < size; i++) {
+                        const found = tableOfContents[i]
 
-                for (var i = index + 1, size = this.form.toc.length; i < size; i++) {
-                    const found = this.form.toc[i]
-                    console.debug(`search index ${i} depth ${found.depth} parent ${parent.depth} title ${found.title}`)
+                        if (parent.depth === found.depth) {
+                            foundIndex = i
+                            break
+                        }
 
-                    if (parent.depth === found.depth) {
-                        foundIndex = i
-                        break
+                        console.debug(found.depth)
+                        console.debug(parent.depth)
+
+                        if (parent.depth > found.depth) {
+                            foundIndex = i
+                            break
+                        }
                     }
 
-                    if (parent.depth == found.depth + 1) {
-                        foundIndex = i
-                        break
+                    if (-1 === foundIndex) {
+                        foundIndex = tableOfContents.length
                     }
+
+                    return foundIndex
                 }
 
-                if (-1 === foundIndex) {
-                    foundIndex = this.form.toc.length
-                }
-
-                console.debug(`found index ${foundIndex}`)
-
-                row.depth = parent.depth + 1
-
-                this.form.toc.splice(foundIndex, 0, row)
+                this.form.tableOfContents.splice(
+                    findPosition(index, parent, this.form.tableOfContents),
+                    0,
+                    tableOfContent
+                )
             },
 
             onAddChild(index, parent) {
-                var foundIndex = -1
-
-                if (-1 === foundIndex) {
-                    for (var i = index + 1, size = this.form.toc.length; i < size; i++) {
-                        const found = this.form.toc[i]
-                        console.debug(`search index ${i} depth ${found.depth} parent ${parent.depth} title ${found.title}`)
-
-                        if (parent.depth === found.depth) {
-                            console.debug('search complete')
-                            foundIndex = i
-                            break
-                        }
-
-                        if (parent.depth == found.depth + 1) {
-                            foundIndex = i
-                            break
-                        }
-                    }
-                }
-
-                if (-1 === foundIndex) {
-                    foundIndex = this.form.toc.length
-                }
-
-                console.debug(`found index ${foundIndex}`)
-
-                this.form.toc.splice(foundIndex, 0, {
-                    title: "",
-                    editing: true,
-                    inputFocus: true,
-                    depth: parent.depth + 1,
-                    isResource: false,
-                    parent: parent.id
-                })
+                this.addChild(
+                    index,
+                    parent,
+                    new TableOfContentViewModel(
+                        null,
+                        "",
+                        parent.depth + 1,
+                        true,
+                        null
+                    )
+                )
             },
 
             async onSubmit() {
