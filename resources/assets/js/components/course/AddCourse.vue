@@ -142,6 +142,8 @@
 <script>
     import TocTransfer from '../../TocTransfer'
     import ResourceChoiceComponent from './ResourceChoiceComponent'
+    import TableOfContentDTOAssembler from "./remote/TableOfContentDTOAssembler";
+    import CourseViewModelAssembler from "./view/CourseViewModelAssembler";
 
     export default {
         components: {
@@ -372,8 +374,13 @@
             async onSubmit() {
                 console.debug('button click of course create')
 
-                const tocTransfer = new TocTransfer()
-                const toc = tocTransfer.toTree(this.form.toc)
+                const assembler = new TableOfContentDTOAssembler()
+                const viewModelAssembler = new CourseViewModelAssembler()
+                const toc = assembler.toTableOfContentDTOList(
+                    viewModelAssembler.toTableOfContents(this.form.toc)
+                )
+                // const tocTransfer = new TocTransfer()
+                // const toc = tocTransfer.toTree(this.form.toc)
                 const course = {
                     title: this.form.title,
                     description: this.form.description,

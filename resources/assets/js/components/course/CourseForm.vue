@@ -145,6 +145,7 @@
     import CourseServiceFacade from "./CourseServiceFacade";
     import CourseRemote from "./CourseRemote";
     import TableOfContentViewModel from "./view/model/TableOfContentViewModel";
+    import TableOfContentDTOAssembler from "./remote/TableOfContentDTOAssembler";
 
     export default {
         components: {
@@ -372,8 +373,14 @@
             async onSubmit() {
                 console.debug('button click of course create')
 
-                const tocTransfer = new TocTransfer()
-                const toc = tocTransfer.toTree(this.form.toc)
+                // const tocTransfer = new TocTransfer()
+                // const toc = tocTransfer.toTree(this.form.toc)
+
+                const assembler = new TableOfContentDTOAssembler()
+                    , toc = assembler.toTableOfContentDTOList(
+                        this.form.tableOfContents
+                      )
+
                 const course = {
                     title: this.form.title,
                     description: this.form.description,

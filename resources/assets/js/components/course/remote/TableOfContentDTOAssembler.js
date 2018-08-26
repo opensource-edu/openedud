@@ -1,26 +1,34 @@
+import TableOfContentDTO from "./TableOfContentDTO";
+
 export default class TableOfContentDTOAssembler {
 
     toTableOfContentDTO(tableOfContent) {
 
     }
 
+    /**
+     *
+     * @param tableOfContentList
+     * @return TableOfContentDTO
+     */
     toTableOfContentDTOList(tableOfContentList) {
-        const walk = function(tableOfContentList) {
+        const walk = function(tableOfContentList, parent) {
+            const tableOfContentDTOList = []
+            tableOfContentList.forEach((tableOfContent) => {
 
-        }
-
-        const self = this
-            , tableOfContentDTOList = []
-        walk((tableOfContent, parent) => {
-            const tableOfContentDTO = new TableOfContentDTO()
-            if (null == parent) {
+                const tableOfContentDTO = new TableOfContentDTO(
+                    tableOfContent.id,
+                    tableOfContent.title
+                )
                 tableOfContentDTOList.push(tableOfContentDTO)
-            } else {
-                const parentDTO = null
-                parentDTO.addChild(tableOfContentDTO)
-            }
-        })
 
-        return tableOfContentDTOList
+                if (tableOfContent.children && tableOfContent.children.length > 0) {
+                    const children = walk(tableOfContent.children, tableOfContent)
+                    tableOfContentDTO.children = children
+                }
+            })
+            return tableOfContentDTOList
+        }
+        return walk(tableOfContentList, null)
     }
 }
