@@ -100,7 +100,7 @@
                         <el-table-column prop="action" label="操作">
                             <template scope="scope" style="width: 100px">
                                 <el-button v-if="!scope.row.editing" @click="onRowEdit(scope.row)" size="small">编辑</el-button>
-                                <el-button v-if="scope.row.editing" @click="onRowCompleteEdit(scope.row)" size="small" type="primary">确认</el-button>
+                                <el-button v-if="scope.row.editing" @click="onRowCompleteEdit(scope.row)" size="small" type="primary" :loading="scope.row.loading">确认</el-button>
                                 <el-button v-if="scope.row.editing" @click="onRowCancelEdit(scope.$index, scope.row)" size="small">取消</el-button>
                                 <el-button v-if="!scope.row.isResource" @click="onAddChild(scope.$index, scope.row)" size="small">添加子节点</el-button>
                                 <el-button v-if="!scope.row.isResource" @click="onAttachResource(scope.$index, scope.row)" size="small">挂载资源</el-button>
@@ -142,8 +142,7 @@
 <script>
     import TocTransfer from '../../TocTransfer'
     import ResourceChoiceComponent from './ResourceChoiceComponent'
-    import CourseServiceFacade from "./CourseServiceFacade";
-    import CourseRemote from "./CourseRemote";
+
     import TableOfContentViewModel from "./view/model/TableOfContentViewModel";
     import TableOfContentDTOAssembler from "./remote/TableOfContentDTOAssembler";
 
@@ -152,7 +151,7 @@
             'resource-choice': ResourceChoiceComponent
         },
 
-        props: ['id'],
+        props: ['id', 'tableOfContentEditing'],
 
         data() {
             return {
@@ -180,13 +179,12 @@
                 policy: '',
                 uploadingResource: null,
                 activeName: "tableOfContents",
-                test: 10,
                 loading: false,
                 form: {
                     title: 'test course',
                     description: 'test course description',
                     imageURL: '',
-                    toc: [
+                    tableOfContents: [
                         {
                             title: "Chapter 1",
                             editing: false,
@@ -216,10 +214,7 @@
 
         async created() {
 
-            const remote = new CourseRemote(this.$http)
-            this.serviceFacade = new CourseServiceFacade(remote)
-
-            this.form = await this.serviceFacade.fetchOne(this.$route.params.id)
+            console.debug(this.tableOfContentEditing)
         },
 
         mounted() {
@@ -302,10 +297,21 @@
                 this.resourceVisible = true
             },
 
-            onRowCompleteEdit(row) {
-                row.editing = false
+            async onRowCompleteEdit(row) {
+                // row.editing = false
                 row.inputFocus = false
                 row.title = row.typingTitle
+                this.loading = true
+                //
+                await this.tableOfContentEditing(row)
+                // console.debug(123)
+
+                setTimeout(() => {
+                    this.loading = false
+                    // this.$set(row, 'loading', false)
+                }, 1000)
+
+                this.loading = false
             },
 
             onRowCancelEdit(index, row) {

@@ -1,17 +1,37 @@
 <template>
-    <CourseForm v-bind:id="this.$route.params.id"></CourseForm>
+    <CourseForm :table-of-content-editing="onTableOfContentEditing"
+            v-bind:id="this.$route.params.id">
+
+    </CourseForm>
 </template>
 
 <script>
     import CourseForm from './CourseForm'
+    import CourseServiceFacade from "./CourseServiceFacade"
+    import CourseRemote from "./CourseRemote"
 
     export default {
         components: {
             CourseForm
         },
 
-        created() {
-            console.debug(this.$route)
+        async created() {
+            const remote = new CourseRemote(this.$http)
+            this.serviceFacade = new CourseServiceFacade(remote)
+
+            this.form = await this.serviceFacade.fetchOne(this.$route.params.id)
+        },
+
+        methods: {
+            async onTableOfContentEditing(tableOfContent) {
+
+                return new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        resolve()
+                    }, 1000)
+                })
+
+            }
         }
     }
 </script>
