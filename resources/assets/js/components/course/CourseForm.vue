@@ -83,6 +83,11 @@
                     </el-form>
                 </el-tab-pane>
                 <el-tab-pane label="大纲" name="tableOfContents">
+                    <el-row type="flex" justify="end">
+                        <el-col :span="5">
+                            <el-button class="button-add-root-node" justify="end" type="primary" size="small" @click="onClickAddRootNode">添加根节点</el-button>
+                        </el-col>
+                    </el-row>
                     <el-table :data="form.tableOfContents" border>
                         <el-table-column
                                 prop="title"
@@ -137,6 +142,11 @@
         width: 178px;
         height: 178px;
         display: block;
+    }
+
+    .button-add-root-node {
+        margin: 10px 0px;
+        width: 100%;
     }
 </style>
 <script>
@@ -339,6 +349,10 @@
                     0,
                     tableOfContent
                 )
+            },
+
+            onClickAddRootNode() {
+                console.debug('on click add root node')
             },
 
             onClickAddChild(index, parent) {
