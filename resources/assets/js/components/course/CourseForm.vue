@@ -46,7 +46,7 @@
 
                 <span slot="footer" class="dialog-footer">
                     <el-button @click="dialogVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="onAttachResourceConfirm">确 定</el-button>
+                    <el-button type="primary" @click="onClickAttachResourceConfirm">确 定</el-button>
                 </span>
 
             </el-dialog>
@@ -90,7 +90,7 @@
 
                             <template scope="scope">
                                 <div :style="{marginLeft: (scope.row.depth * 10 ) + 'px'}">
-                                    <el-input v-if="scope.row.editing" v-model="scope.row.typingTitle" :focus="scope.row.inputFocus" @keyup.enter.native="onRowCompleteEdit(scope.row)" placeholder="请输入标题"></el-input>
+                                    <el-input v-if="scope.row.editing" v-model="scope.row.typingTitle" :focus="scope.row.inputFocus" @keyup.enter.native="onClickRowCompleteEdit(scope.row)" placeholder="请输入标题"></el-input>
                                     <span v-if="!scope.row.editing">{{scope.row.title}}</span>
                                 </div>
                             </template>
@@ -99,11 +99,11 @@
 
                         <el-table-column prop="action" label="操作">
                             <template scope="scope" style="width: 100px">
-                                <el-button v-if="!scope.row.editing" @click="onRowEdit(scope.row)" size="small">编辑</el-button>
-                                <el-button v-if="scope.row.editing" @click="onRowCompleteEdit(scope.row)" size="small" type="primary" :loading="scope.row.loading">确认</el-button>
-                                <el-button v-if="scope.row.editing" @click="onRowCancelEdit(scope.$index, scope.row)" size="small">取消</el-button>
-                                <el-button v-if="!scope.row.isResource" @click="onAddChild(scope.$index, scope.row)" size="small">添加子节点</el-button>
-                                <el-button v-if="!scope.row.isResource" @click="onAttachResource(scope.$index, scope.row)" size="small">挂载资源</el-button>
+                                <el-button v-if="!scope.row.editing" @click="onClickRowEdit(scope.row)" size="small">编辑</el-button>
+                                <el-button v-if="scope.row.editing" @click="onClickRowCompleteEdit(scope.row)" size="small" type="primary" :ref="'confirm_' + scope.row.id" :loading="scope.row.loading">确认</el-button>
+                                <el-button v-if="scope.row.editing" @click="onClickRowCancelEdit(scope.$index, scope.row)" size="small">取消</el-button>
+                                <el-button v-if="!scope.row.isResource" @click="onClickAddChild(scope.$index, scope.row)" size="small">添加子节点</el-button>
+                                <el-button v-if="!scope.row.isResource" @click="onClickAttachResource(scope.$index, scope.row)" size="small">挂载资源</el-button>
                             </template>
                         </el-table-column>
 
@@ -151,7 +151,7 @@
             'resource-choice': ResourceChoiceComponent
         },
 
-        props: ['id', 'tableOfContentEditing'],
+        props: ['id', 'tableOfContentEditing', 'form'],
 
         data() {
             return {
@@ -179,42 +179,12 @@
                 policy: '',
                 uploadingResource: null,
                 activeName: "tableOfContents",
-                loading: false,
-                form: {
-                    title: 'test course',
-                    description: 'test course description',
-                    imageURL: '',
-                    tableOfContents: [
-                        {
-                            title: "Chapter 1",
-                            editing: false,
-                            inputFocus: false,
-                            isResource: false,
-                            depth: 0
-                        },
-                        {
-                            title: "Section 1.1",
-                            editing: false,
-                            inputFocus: false,
-                            isResource: false,
-                            depth: 1
-                        },
-                        {
-                            title: "Chapter 2",
-                            editing: false,
-                            inputFocus: false,
-                            isResource: false,
-                            depth: 0
-                        },
-                    ]
+                loading: false
 
-                }
             }
         },
 
         async created() {
-
-            console.debug(this.tableOfContentEditing)
         },
 
         mounted() {
@@ -228,7 +198,7 @@
 
 
 
-            onAttachResourceConfirm() {
+            onClickAttachResourceConfirm() {
 
                 this.addChild(this.chooseAttachTOCIndex, this.chooseAttachTOC, {
                     title: "123123",
@@ -251,7 +221,6 @@
             },
 
             async onBeforeUpload(file) {
-                console.debug(file)
 
                 const response = await this.$http.post(
                     '/api/resource/uploader',
@@ -261,7 +230,7 @@
                         mime_type: file.type
                     }
                 )
-                console.debug(response)
+                
                 this.uploadURL = response.data.upload_url
                 this.signature = response.data.signature
                 this.accessKey = response.data.access_key
@@ -278,11 +247,8 @@
                 formData.append('OSSAccessKeyId', this.accessKey)
                 formData.append('policy', this.policy)
                 formData.append('signature', this.signature)
-                console.debug(this.uploadURL)
+                
                 await this.$http.post(this.uploadURL, formData)
-                console.debug('uploaded')
-                console.debug(this.uploadingResource)
-
                 await this.$http.put(
                     `/api/resource/${this.uploadingResource.id}/status`,
                     {
@@ -291,30 +257,23 @@
                 )
             },
 
-            onAttachResource(index, row) {
+            onClickAttachResource(index, row) {
                 this.chooseAttachTOC = row
                 this.chooseAttachTOCIndex = index
                 this.resourceVisible = true
             },
 
-            async onRowCompleteEdit(row) {
-                // row.editing = false
+            async onClickRowCompleteEdit(row) {
                 row.inputFocus = false
                 row.title = row.typingTitle
-                this.loading = true
-                //
+                row.loading = true
                 await this.tableOfContentEditing(row)
-                // console.debug(123)
 
-                setTimeout(() => {
-                    this.loading = false
-                    // this.$set(row, 'loading', false)
-                }, 1000)
-
-                this.loading = false
+                this.$refs['confirm_' + row.id].loading = false
+                row.editing = false
             },
 
-            onRowCancelEdit(index, row) {
+            onClickRowCancelEdit(index, row) {
                 row.editing = false
                 row.inputFocus = false
 
@@ -322,8 +281,7 @@
                     this.form.tableOfContents.splice(index, 1)
             },
 
-            onRowEdit(row) {
-                console.debug(row)
+            onClickRowEdit(row) {
                 row.editing = true
                 row.inputFocus = true
             },
@@ -340,9 +298,6 @@
                             foundIndex = i
                             break
                         }
-
-                        console.debug(found.depth)
-                        console.debug(parent.depth)
 
                         if (parent.depth > found.depth) {
                             foundIndex = i
@@ -364,7 +319,7 @@
                 )
             },
 
-            onAddChild(index, parent) {
+            onClickAddChild(index, parent) {
                 this.addChild(
                     index,
                     parent,

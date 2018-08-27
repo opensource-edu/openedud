@@ -1,5 +1,7 @@
 <template>
-    <CourseForm :table-of-content-editing="onTableOfContentEditing"
+    <CourseForm
+        :table-of-content-editing="onTableOfContentEditing"
+        :form="this.course"
             v-bind:id="this.$route.params.id">
 
     </CourseForm>
@@ -15,11 +17,17 @@
             CourseForm
         },
 
+        data() {
+            return {
+                course: null
+            }
+        },
+
         async created() {
             const remote = new CourseRemote(this.$http)
             this.serviceFacade = new CourseServiceFacade(remote)
 
-            this.form = await this.serviceFacade.fetchOne(this.$route.params.id)
+            this.course = await this.serviceFacade.fetchOne(this.$route.params.id)
         },
 
         methods: {
