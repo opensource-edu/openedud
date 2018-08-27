@@ -151,7 +151,24 @@
             'resource-choice': ResourceChoiceComponent
         },
 
-        props: ['id', 'tableOfContentEditing', 'form'],
+        props: {
+            id: {
+                type: String
+            },
+            tableOfContentEditing: {
+                type: Function
+            },
+            form: {
+                type: Object,
+                default() {
+                    return {
+                        title: '',
+                        description: '',
+                        tableOfCotnents: []
+                    }
+                }
+            }
+        },
 
         data() {
             return {
@@ -184,7 +201,12 @@
             }
         },
 
-        async created() {
+        created() {
+            if (!this.onTableOfContentEditing) {
+                this.onTableOfContentEditing = (_) => {
+
+                }
+            }
         },
 
         mounted() {
