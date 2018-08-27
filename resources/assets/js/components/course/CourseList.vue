@@ -82,7 +82,12 @@
             },
 
             onClickEdit(course) {
-                this.$router.push()
+                this.$router.push({
+                    name: 'CourseEdit',
+                    params: {
+                        id: course.id
+                    }
+                })
             }
         }
     }
