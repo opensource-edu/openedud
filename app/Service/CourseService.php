@@ -51,6 +51,30 @@ class CourseService
             ->find($id);
     }
 
+    public function storageTableOfContent($courseId, $id, $parentId, $title)
+    {
+        $course = Course::find($courseId);
+        if (null != $id) {
+            $tableOfContent = TableOfContent::find($id);
+            $tableOfContent->title = $title;
+            $tableOfContent->save();
+        } else {
+            $tableOfContent = TableOfContent::create([
+                'title' => $title
+            ]);
+        }
+
+
+        if (null == $parentId) {
+            $course->tableOfContents()->attach($tableOfContent);
+        } else {
+            $parent = TableOfContent::find($parentId);
+            $parent->appendNode($tableOfContent);
+        }
+
+        return $tableOfContent;
+    }
+
     function findUnattachedTOC($tocList)
     {
 

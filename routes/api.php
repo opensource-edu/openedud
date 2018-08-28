@@ -24,3 +24,7 @@ Route::get('/courses', 'CourseController@fetchList');
 Route::put('/course/{id}', 'CourseController@storage');
 Route::get('/course/{id}', 'CourseController@fetchOne');
 Route::put('/course', 'CourseController@storage');
+Route::post('/course/{course_id}/table-of-content', 'CourseController@storageTableOfContent');
+Route::put('/course/{course_id}/table-of-content', 'CourseController@storageTableOfContent');
+
+Route::post('/table-of-content', 'TableOfContentController@storage');
