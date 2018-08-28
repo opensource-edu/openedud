@@ -105,7 +105,7 @@
                         <el-table-column prop="action" label="操作">
                             <template scope="scope" style="width: 100px">
                                 <el-button v-if="!scope.row.editing" @click="onClickRowEdit(scope.row)" size="small">编辑</el-button>
-                                <el-button v-if="scope.row.editing" @click="onClickRowCompleteEdit(scope.row)" size="small" type="primary" :ref="'confirm_' + scope.row.id" :loading="scope.row.loading">确认</el-button>
+                                <el-button v-if="scope.row.editing" @click="onClickRowCompleteEdit(scope.row)" size="small" type="primary" :ref="'confirm_' + scope.row.viewId" :loading="scope.row.loading">确认</el-button>
                                 <el-button v-if="scope.row.editing" @click="onClickRowCancelEdit(scope.$index, scope.row)" size="small">取消</el-button>
                                 <el-button v-if="!scope.row.isResource" @click="onClickAddChild(scope.$index, scope.row)" size="small">添加子节点</el-button>
                                 <el-button v-if="!scope.row.isResource" @click="onClickAttachResource(scope.$index, scope.row)" size="small">挂载资源</el-button>
@@ -299,9 +299,13 @@
                 row.inputFocus = false
                 row.title = row.typingTitle
                 row.loading = true
-                await this.tableOfContentEditing(row)
+                this.$refs['confirm_' + row.viewId].loading = true
 
-                this.$refs['confirm_' + row.id].loading = false
+                if (this.tableOfContentEditing)
+                    await this.tableOfContentEditing(row)
+
+                this.$refs['confirm_' + row.viewId].loading = false
+                row.loading = false
                 row.editing = false
             },
 
@@ -353,6 +357,17 @@
 
             onClickAddRootNode() {
                 console.debug('on click add root node')
+                this.form.tableOfContents.splice(
+                    this.form.tableOfContents.length,
+                    0,
+                    new TableOfContentViewModel(
+                        null,
+                        "",
+                        0,
+                        true,
+                        null
+                    )
+                )
             },
 
             onClickAddChild(index, parent) {

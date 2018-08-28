@@ -9,5 +9,6 @@ export default class TableOfContentViewModel {
         this.isResource = null != resource
 
         this.typingTitle = title
+        this.viewId = id || Math.random()
     }
 }
