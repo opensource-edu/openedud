@@ -25,18 +25,29 @@
 
         async created() {
             const remote = new CourseRemote(this.$http)
+            this.remote = remote
             this.serviceFacade = new CourseServiceFacade(remote)
 
             this.course = await this.serviceFacade.fetchOne(this.$route.params.id)
         },
 
+        computed: {
+            courseId() {
+                return this.$route.params.id
+            }
+        },
+
         methods: {
-            async onTableOfContentEditing(tableOfContent) {
+            async onTableOfContentEditing(tableOfContent, parent) {
 
                 return new Promise((resolve, reject) => {
-                    setTimeout(() => {
-                        resolve()
-                    }, 1000)
+                    this.remote.storageTableOfContent(
+                        this.courseId,
+                        tableOfContent.id,
+                        parent ? parent.id : null,
+                        tableOfContent.title
+                    )
+                    resolve()
                 })
 
             }

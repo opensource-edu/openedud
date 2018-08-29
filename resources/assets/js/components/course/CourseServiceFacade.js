@@ -11,4 +11,12 @@ export default class CourseServiceFacade {
         const viewModel = this.assembler.toViewModel(course)
         return viewModel
     }
+
+    async storageTableOfContent(course, parent, title) {
+        return await this.remote.storageTableOfContent(
+            course.id,
+            parent.id,
+            title
+        )
+    }
 }

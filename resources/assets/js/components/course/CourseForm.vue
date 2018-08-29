@@ -105,7 +105,7 @@
                         <el-table-column prop="action" label="操作">
                             <template scope="scope" style="width: 100px">
                                 <el-button v-if="!scope.row.editing" @click="onClickRowEdit(scope.row)" size="small">编辑</el-button>
-                                <el-button v-if="scope.row.editing" @click="onClickRowCompleteEdit(scope.row)" size="small" type="primary" :ref="'confirm_' + scope.row.viewId" :loading="scope.row.loading">确认</el-button>
+                                <el-button v-if="scope.row.editing" @click="onClickRowCompleteEdit(scope.$index, scope.row)" size="small" type="primary" :ref="'confirm_' + scope.row.viewId" :loading="scope.row.loading">确认</el-button>
                                 <el-button v-if="scope.row.editing" @click="onClickRowCancelEdit(scope.$index, scope.row)" size="small">取消</el-button>
                                 <el-button v-if="!scope.row.isResource" @click="onClickAddChild(scope.$index, scope.row)" size="small">添加子节点</el-button>
                                 <el-button v-if="!scope.row.isResource" @click="onClickAttachResource(scope.$index, scope.row)" size="small">挂载资源</el-button>
@@ -295,18 +295,34 @@
                 this.resourceVisible = true
             },
 
-            async onClickRowCompleteEdit(row) {
+            async onClickRowCompleteEdit(index, row) {
                 row.inputFocus = false
                 row.title = row.typingTitle
                 row.loading = true
                 this.$refs['confirm_' + row.viewId].loading = true
 
-                if (this.tableOfContentEditing)
-                    await this.tableOfContentEditing(row)
+                if (this.tableOfContentEditing) {
+                    await this.tableOfContentEditing(
+                        row,
+                        this.findParent(index, row)
+                    )
+                }
 
                 this.$refs['confirm_' + row.viewId].loading = false
                 row.loading = false
                 row.editing = false
+            },
+
+            findParent(index, row) {
+                if (row.depth == 0)
+                    return null
+
+                for (var i = index - 1; i > -1; i--) {
+                    const previous = this.form.tableOfContents[i]
+                    if (previous.depth < row.depth)
+                        return previous
+                }
+                return null
             },
 
             onClickRowCancelEdit(index, row) {
