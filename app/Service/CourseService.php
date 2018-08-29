@@ -62,14 +62,13 @@ class CourseService
             $tableOfContent = TableOfContent::create([
                 'title' => $title
             ]);
-        }
 
-
-        if (null == $parentId) {
-            $course->tableOfContents()->attach($tableOfContent);
-        } else {
-            $parent = TableOfContent::find($parentId);
-            $parent->appendNode($tableOfContent);
+            if (null == $parentId) {
+                $course->tableOfContents()->attach($tableOfContent);
+            } else {
+                $parent = TableOfContent::find($parentId);
+                $parent->appendNode($tableOfContent);
+            }
         }
 
         return $tableOfContent;
