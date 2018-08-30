@@ -21,4 +21,11 @@ export default class CourseRemote {
 
         return response.data
     }
+
+    async deleteTableOfContent(courseId, tocId) {
+        const response = await this.http.delete(
+            `/api/course/${courseId}/table-of-content/${tocId}`
+        )
+        return response.data
+    }
 }

@@ -104,11 +104,12 @@
 
                         <el-table-column prop="action" label="操作">
                             <template scope="scope" style="width: 100px">
-                                <el-button v-if="!scope.row.editing" @click="onClickRowEdit(scope.row)" size="small">编辑</el-button>
-                                <el-button v-if="scope.row.editing" @click="onClickRowCompleteEdit(scope.$index, scope.row)" size="small" type="primary" :ref="'confirm_' + scope.row.viewId" :loading="scope.row.loading">确认</el-button>
-                                <el-button v-if="scope.row.editing" @click="onClickRowCancelEdit(scope.$index, scope.row)" size="small">取消</el-button>
-                                <el-button v-if="!scope.row.isResource" @click="onClickAddChild(scope.$index, scope.row)" size="small">添加子节点</el-button>
-                                <el-button v-if="!scope.row.isResource" @click="onClickAttachResource(scope.$index, scope.row)" size="small">挂载资源</el-button>
+                                <el-button v-if="!scope.row.editing" @click="onClickRowEdit(scope.row)" size="mini">编辑</el-button>
+                                <el-button v-if="scope.row.editing" @click="onClickRowCompleteEdit(scope.$index, scope.row)" size="mini" type="primary" :ref="'confirm_' + scope.row.viewId" :loading="scope.row.loading">确认</el-button>
+                                <el-button v-if="scope.row.editing" @click="onClickRowCancelEdit(scope.$index, scope.row)" size="mini">取消</el-button>
+                                <el-button v-if="!scope.row.editing" @click="onClickRowDelete(scope.$index, scope.row)" size="mini" type="danger">删除</el-button>
+                                <el-button v-if="!scope.row.isResource && !scope.row.editing" @click="onClickAddChild(scope.$index, scope.row)" size="mini">添加子节点</el-button>
+                                <el-button v-if="!scope.row.isResource && !scope.row.editing" @click="onClickAttachResource(scope.$index, scope.row)" size="mini">挂载资源</el-button>
                             </template>
                         </el-table-column>
 
@@ -166,6 +167,9 @@
                 type: String
             },
             tableOfContentEditing: {
+                type: Function
+            },
+            tableOfContentDeleting: {
                 type: Function
             },
             form: {
@@ -293,6 +297,42 @@
                 this.chooseAttachTOC = row
                 this.chooseAttachTOCIndex = index
                 this.resourceVisible = true
+            },
+
+            async onClickRowDelete(index, row) {
+                // row.loading = true
+                // this.$refs['confirm_' + row.viewId].loading = true
+
+                if (this.tableOfContentDeleting) {
+                    await this.tableOfContentDeleting(row)
+                }
+
+                this.findAndDeleteRangeByStart(index)
+
+                // row.loading = false
+                // this.$refs['confirm_' + row.viewId].loading = true
+            },
+
+            findAndDeleteRangeByStart(start) {
+                const toc = this.form.tableOfContents[start]
+                var end = -1
+                for (var i = start + 1, size = this.form.tableOfContents.length; i < size; i++) {
+                    const pick = this.form.tableOfContents[i];
+                    if (pick.depth <= toc.depth) {
+                        end = i
+                        break
+                    }
+                }
+
+                if (end == -1)
+                    end = this.form.tableOfContents.length
+
+                const deleted = this.form.tableOfContents.splice(
+                    start,
+                    end - start
+                )
+
+                return deleted
             },
 
             async onClickRowCompleteEdit(index, row) {

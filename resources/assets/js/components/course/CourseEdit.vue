@@ -1,6 +1,7 @@
 <template>
     <CourseForm
         :table-of-content-editing="onTableOfContentEditing"
+        :table-of-content-deleting="onTableOfContentDeleting"
         :form="this.course"
             v-bind:id="this.$route.params.id">
 
@@ -50,6 +51,10 @@
                     resolve()
                 })
 
+            },
+
+            async onTableOfContentDeleting(tableOfContent) {
+                await this.remote.deleteTableOfContent(this.courseId, tableOfContent.id)
             }
         }
     }
