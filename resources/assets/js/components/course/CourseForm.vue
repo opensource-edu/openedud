@@ -95,7 +95,7 @@
 
                             <template scope="scope">
                                 <div :style="{marginLeft: (scope.row.depth * 10 ) + 'px'}">
-                                    <el-input v-if="scope.row.editing" v-model="scope.row.typingTitle" :focus="scope.row.inputFocus" @keyup.enter.native="onClickRowCompleteEdit(scope.row)" placeholder="请输入标题"></el-input>
+                                    <el-input v-if="scope.row.editing" v-model="scope.row.typingTitle" :focus="scope.row.inputFocus" @keyup.enter.native="onClickRowCompleteEdit(scope.row)" placeholder="请输入标题" minlength="3" autofocus="true"></el-input>
                                     <span v-if="!scope.row.editing">{{scope.row.title}}</span>
                                 </div>
                             </template>
