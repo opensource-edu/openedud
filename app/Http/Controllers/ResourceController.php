@@ -8,6 +8,12 @@ use OSS\OssClient;
 
 class ResourceController
 {
+
+    public function fetchResourceList()
+    {
+        return Resource::orderBy('created_at', 'desc')->take(10)->get();
+    }
+
     function gmt_iso8601($time) {
         $dtStr = date("c", $time);
         $mydatetime = new \DateTime($dtStr);
