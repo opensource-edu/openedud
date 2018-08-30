@@ -276,7 +276,7 @@
                             resource.title,
                             this.chooseAttachTOC.depth + 1,
                             false,
-                            null
+                            resource
                         )
                     )
                 })
