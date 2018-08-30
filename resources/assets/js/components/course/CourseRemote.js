@@ -28,4 +28,12 @@ export default class CourseRemote {
         )
         return response.data
     }
+
+    async fetchResourceListTop10() {
+        const response = await this.http.get(
+            `/api/resource`
+        )
+
+        return response.data
+    }
 }

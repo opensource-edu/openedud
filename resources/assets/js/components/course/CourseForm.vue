@@ -1,6 +1,6 @@
 <template>
     <el-row type="flex">
-        <el-col :span="20">
+        <el-col :span="24">
             <el-dialog
                     title="挂载资源"
                     :visible.sync="resourceVisible"
@@ -8,7 +8,7 @@
                     center
             >
 
-                <el-tabs v-model="attachResourceActiveName">
+                <el-tabs v-model="attachResourceActiveName" @tab-click="onClickTabResourceList">
                     <el-tab-pane label="上传资源" name="uploader">
                         <el-row type="flex" justify="center">
                             <el-col>
@@ -35,9 +35,9 @@
                         <el-table :data="resources" border >
                             <el-table-column prop="id" label="id" width="80"></el-table-column>
                             <el-table-column prop="title" label="标题"></el-table-column>
-                            <el-table-column title="选择">
+                            <el-table-column title="选择" width="100">
                                 <template scope="scope">
-                                    <el-checkbox v-model="scope.row.choose" label="选择"></el-checkbox>
+                                    <el-checkbox v-model="scope.row.choose" label="选择" @change="onResourceSelectChanged"></el-checkbox>
                                 </template>
                             </el-table-column>
                         </el-table>
@@ -151,15 +151,15 @@
     }
 </style>
 <script>
-    import TocTransfer from '../../TocTransfer'
     import ResourceChoiceComponent from './ResourceChoiceComponent'
-
+    import ResourceSelectComponent from './ResourceSelectComponent'
     import TableOfContentViewModel from "./view/model/TableOfContentViewModel";
     import TableOfContentDTOAssembler from "./remote/TableOfContentDTOAssembler";
 
     export default {
         components: {
-            'resource-choice': ResourceChoiceComponent
+            'resource-choice': ResourceChoiceComponent,
+            'resource-select': ResourceSelectComponent
         },
 
         props: {
@@ -172,13 +172,25 @@
             tableOfContentDeleting: {
                 type: Function
             },
+            resources: {
+                type: Array,
+                default: () => {
+                    return []
+                }
+            },
+            resourceSelect: {
+                type: Function
+            },
+            resourceSelected: {
+                type: Function
+            },
             form: {
                 type: Object,
                 default() {
                     return {
                         title: '',
                         description: '',
-                        tableOfCotnents: []
+                        tableOfContents: []
                     }
                 }
             }
@@ -216,6 +228,8 @@
         },
 
         created() {
+            // this.resourceVisible = true
+
             if (!this.onTableOfContentEditing) {
                 this.onTableOfContentEditing = (_) => {
 
@@ -232,17 +246,41 @@
 
             },
 
+            onClickTabResourceList() {
 
+                if ('choice' == this.attachResourceActiveName &&
+                    this.resourceSelect) {
+
+                    this.resourceSelect()
+                }
+            },
+
+            onResourceSelectChanged(e) {
+                console.debug(e)
+            },
 
             onClickAttachResourceConfirm() {
 
-                this.addChild(this.chooseAttachTOCIndex, this.chooseAttachTOC, {
-                    title: "123123",
-                    editing: false,
-                    inputFocus: false,
-                    isResource: true,
-                    resource_id: 40
+                const selected = this.chooseAttachTOC ? [this.chooseAttachTOC] : []
+                this.resources.forEach((resource) => {
+                    selected.push({
+                        id: resource.id,
+                        title: resource.title
+                    })
                 })
+
+                this.resources.forEach((resource) => {
+                    this.addChild(this.chooseAttachTOCIndex, this.chooseAttachTOC,
+                        new TableOfContentViewModel(
+                            null,
+                            resource.title,
+                            this.chooseAttachTOC.depth + 1,
+                            false,
+                            null
+                        )
+                    )
+                })
+
 
                 this.resourceVisible = false
             },

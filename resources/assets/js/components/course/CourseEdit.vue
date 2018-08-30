@@ -2,7 +2,9 @@
     <CourseForm
         :table-of-content-editing="onTableOfContentEditing"
         :table-of-content-deleting="onTableOfContentDeleting"
+        :resource-select="onResourceSelect"
         :form="this.course"
+        :resources="resources"
             v-bind:id="this.$route.params.id">
 
     </CourseForm>
@@ -20,7 +22,8 @@
 
         data() {
             return {
-                course: null
+                course: null,
+                resources: []
             }
         },
 
@@ -55,6 +58,11 @@
 
             async onTableOfContentDeleting(tableOfContent) {
                 await this.remote.deleteTableOfContent(this.courseId, tableOfContent.id)
+            },
+
+            async onResourceSelect() {
+
+                this.resources = await this.remote.fetchResourceListTop10()
             }
         }
     }
