@@ -44,6 +44,14 @@ class CourseController
         );
     }
 
+    public function deleteTableOfContent($courseId, $tableOfContentId)
+    {
+        return $this->courseService->deleteTableOfContent(
+            $courseId,
+            $tableOfContentId
+        );
+    }
+
     public function fetchList()
     {
         return Course::orderBy('id', 'desc')->paginate(20);

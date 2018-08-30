@@ -74,6 +74,20 @@ class CourseService
         return $tableOfContent;
     }
 
+    public function deleteTableOfContent($courseId, $tableOfContentId)
+    {
+        $toc = TableOfContent::find($tableOfContentId);
+
+        if (!$toc->parent) {
+            $course = Course::find($courseId);
+            $course->tableOfContents()->detach($tableOfContentId);
+        }
+
+        $toc->delete();
+
+        return $toc;
+    }
+
     function findUnattachedTOC($tocList)
     {
 

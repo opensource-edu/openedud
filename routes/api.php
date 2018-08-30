@@ -26,5 +26,6 @@ Route::get('/course/{id}', 'CourseController@fetchOne');
 Route::put('/course', 'CourseController@storage');
 Route::post('/course/{course_id}/table-of-content', 'CourseController@storageTableOfContent');
 Route::put('/course/{course_id}/table-of-content', 'CourseController@storageTableOfContent');
+Route::delete('/course/{course_id}/table-of-content/{toc_id}', 'CourseController@deleteTableOfContent');
 
 Route::post('/table-of-content', 'TableOfContentController@storage');
