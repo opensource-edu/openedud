@@ -36,4 +36,12 @@ export default class CourseRemote {
 
         return response.data
     }
+
+    async attachResourceToTableOfContent(tocId, resourceIdList) {
+        const response = await this.http.post(
+            `/api/table-of-content/${tocId}`,
+            resourceIdList
+        )
+        return response.data
+    }
 }

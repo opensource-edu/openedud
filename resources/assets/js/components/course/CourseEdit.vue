@@ -3,6 +3,7 @@
         :table-of-content-editing="onTableOfContentEditing"
         :table-of-content-deleting="onTableOfContentDeleting"
         :resource-select="onResourceSelect"
+        :resource-selected="onResourceSelected"
         :form="this.course"
         :resources="resources"
             v-bind:id="this.$route.params.id">
@@ -14,6 +15,7 @@
     import CourseForm from './CourseForm'
     import CourseServiceFacade from "./CourseServiceFacade"
     import CourseRemote from "./CourseRemote"
+    import ResourceViewModelAssembler from "../resource/view/ResourceViewModelAssembler";
 
     export default {
         components: {
@@ -31,6 +33,7 @@
             const remote = new CourseRemote(this.$http)
             this.remote = remote
             this.serviceFacade = new CourseServiceFacade(remote)
+            this.resourceViewModelAssembler = new ResourceViewModelAssembler()
 
             this.course = await this.serviceFacade.fetchOne(this.$route.params.id)
         },
@@ -57,12 +60,29 @@
             },
 
             async onTableOfContentDeleting(tableOfContent) {
-                await this.remote.deleteTableOfContent(this.courseId, tableOfContent.id)
+                await this.remote.deleteTableOfContent(
+                    this.courseId,
+                    tableOfContent.id
+                )
             },
 
             async onResourceSelect() {
+                const resourceList = await this.remote.fetchResourceListTop10()
+                this.resources = this
+                    .resourceViewModelAssembler
+                    .toViewModelList(resourceList)
+            },
 
-                this.resources = await this.remote.fetchResourceListTop10()
+            async onResourceSelected(tocId, resourceList) {
+                try {
+                    await this.remote.attachResourceToTableOfContent(
+                        tocId,
+                        resourceList
+                    )
+                    return true
+                } catch (e) {
+                    return false
+                }
             }
         }
     }

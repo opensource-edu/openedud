@@ -6,6 +6,7 @@
                     :visible.sync="resourceVisible"
                     width="60%"
                     center
+                    v-loading="attachResourceDialogLoading"
             >
 
                 <el-tabs v-model="attachResourceActiveName" @tab-click="onClickTabResourceList">
@@ -37,7 +38,7 @@
                             <el-table-column prop="title" label="标题"></el-table-column>
                             <el-table-column title="选择" width="100">
                                 <template scope="scope">
-                                    <el-checkbox v-model="scope.row.choose" label="选择" @change="onResourceSelectChanged"></el-checkbox>
+                                    <el-checkbox v-model="scope.row.chosen" label="选择" @change="onResourceSelectChanged"></el-checkbox>
                                 </template>
                             </el-table-column>
                         </el-table>
@@ -155,6 +156,7 @@
     import ResourceSelectComponent from './ResourceSelectComponent'
     import TableOfContentViewModel from "./view/model/TableOfContentViewModel";
     import TableOfContentDTOAssembler from "./remote/TableOfContentDTOAssembler";
+    import ResourceViewModel from "./view/model/ResourceViewModel";
 
     export default {
         components: {
@@ -203,18 +205,6 @@
                 chooseAttachTOC: null,
                 chooseAttachTOCIndex: -1,
                 resources: [
-                    {
-                        id: 1,
-                        title: '学习视频 1',
-                        type: 'video',
-                        choose: "选择"
-                    },
-                    {
-                        id: 2,
-                        title: '学习视频 2',
-                        type: 'video',
-                        choose: "选择"
-                    }
                 ],
                 uploadURL: '',
                 accessKey: '',
@@ -222,7 +212,12 @@
                 policy: '',
                 uploadingResource: null,
                 activeName: "tableOfContents",
-                loading: false
+                loading: false,
+
+                /**
+                 * 资源挂载弹层的加载状态
+                 */
+                attachResourceDialogLoading: false
 
             }
         },
@@ -259,15 +254,28 @@
                 console.debug(e)
             },
 
-            onClickAttachResourceConfirm() {
-
-                const selected = this.chooseAttachTOC ? [this.chooseAttachTOC] : []
-                this.resources.forEach((resource) => {
-                    selected.push({
-                        id: resource.id,
-                        title: resource.title
-                    })
+            async onClickAttachResourceConfirm() {
+                const selected = this.resources.filter((resource) => {
+                    if (resource.chosen) {
+                        return new ResourceViewModel(
+                            resource.id,
+                            resource.title,
+                            resource.chosen
+                        )
+                    }
                 })
+
+
+                if (this.resourceSelected) {
+                    this.attachResourceDialogLoading = true
+
+                    //TODO: 增加 table of content id 的参数
+                    const interrupt = this.resourceSelected(selected)
+                    this.attachResourceDialogLoading = false
+                    if (interrupt) {
+                        return
+                    }
+                }
 
                 this.resources.forEach((resource) => {
                     this.addChild(this.chooseAttachTOCIndex, this.chooseAttachTOC,
@@ -323,7 +331,7 @@
                 formData.append('signature', this.signature)
                 
                 await this.$http.post(this.uploadURL, formData)
-                await this.$http.put(
+                const response = await this.$http.put(
                     `/api/resource/${this.uploadingResource.id}/status`,
                     {
                         'status': 'available'
