@@ -30,3 +30,5 @@ Route::put('/course/{course_id}/table-of-content', 'CourseController@storageTabl
 Route::delete('/course/{course_id}/table-of-content/{toc_id}', 'CourseController@deleteTableOfContent');
 
 Route::post('/table-of-content', 'TableOfContentController@storage');
+Route::post('/table-of-content/{parent_id}', 'TableOfContentController@batchStorage');
+Route::post('/table-of-content/{toc_id}/resource', 'TableOfContentController@attachResource');
