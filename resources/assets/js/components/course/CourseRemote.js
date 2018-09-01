@@ -22,6 +22,15 @@ export default class CourseRemote {
         return response.data
     }
 
+    async batchStorageTableOfContent(parentId, command) {
+        const response = await this.http.post(
+            `/api/table-of-content/${parentId}`,
+            command
+        )
+
+        return response.data
+    }
+
     async deleteTableOfContent(courseId, tocId) {
         const response = await this.http.delete(
             `/api/course/${courseId}/table-of-content/${tocId}`
@@ -34,14 +43,6 @@ export default class CourseRemote {
             `/api/resource`
         )
 
-        return response.data
-    }
-
-    async attachResourceToTableOfContent(tocId, resourceIdList) {
-        const response = await this.http.post(
-            `/api/table-of-content/${tocId}`,
-            resourceIdList
-        )
         return response.data
     }
 }

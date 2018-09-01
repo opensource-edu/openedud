@@ -184,7 +184,12 @@
                 type: Function
             },
             resourceSelected: {
-                type: Function
+                type: Function,
+                default: () => {
+                    return async () => {
+                        console.debug('resource-selected is not set')
+                    }
+                }
             },
             form: {
                 type: Object,
@@ -255,40 +260,43 @@
             },
 
             async onClickAttachResourceConfirm() {
-                const selected = this.resources.filter((resource) => {
-                    if (resource.chosen) {
-                        return new ResourceViewModel(
-                            resource.id,
-                            resource.title,
-                            resource.chosen
-                        )
-                    }
-                })
-
-
-                if (this.resourceSelected) {
-                    this.attachResourceDialogLoading = true
-
-                    //TODO: 增加 table of content id 的参数
-                    const interrupt = this.resourceSelected(selected)
-                    this.attachResourceDialogLoading = false
-                    if (interrupt) {
-                        return
-                    }
-                }
-
-                this.resources.forEach((resource) => {
-                    this.addChild(this.chooseAttachTOCIndex, this.chooseAttachTOC,
-                        new TableOfContentViewModel(
+                const selected = this.resources
+                    .filter((resource) => {
+                        if (resource.chosen)
+                            return resource
+                    })
+                    .map((resource) => {
+                        return new TableOfContentViewModel(
                             null,
                             resource.title,
                             this.chooseAttachTOC.depth + 1,
                             false,
                             resource
                         )
-                    )
                 })
 
+
+                if (this.resourceSelected) {
+                    this.attachResourceDialogLoading = true
+
+                    const interrupt = !this.resourceSelected(
+                        this.chooseAttachTOC,
+                        selected
+                    )
+                    this.attachResourceDialogLoading = false
+                    if (interrupt) {
+                        return
+                    }
+
+                    selected.forEach((toc) => {
+                        this.addChild(
+                            this.chooseAttachTOCIndex,
+                            this.chooseAttachTOC,
+                            toc
+                        )
+                    })
+
+                }
 
                 this.resourceVisible = false
             },

@@ -73,14 +73,21 @@
                     .toViewModelList(resourceList)
             },
 
-            async onResourceSelected(tocId, resourceList) {
+            async onResourceSelected(parent, tableOfContents) {
                 try {
-                    await this.remote.attachResourceToTableOfContent(
-                        tocId,
-                        resourceList
+                    const tableOfContentListCommand = tableOfContents.map((tableOfContent) => {
+                        return {
+                            title: tableOfContent.title,
+                            resource_id: tableOfContent.resource.id
+                        }
+                    })
+                    await this.remote.batchStorageTableOfContent(
+                        parent.id,
+                        tableOfContentListCommand
                     )
                     return true
                 } catch (e) {
+                    debugger
                     return false
                 }
             }
