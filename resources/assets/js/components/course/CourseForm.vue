@@ -17,7 +17,7 @@
                                         class="upload-demo justify-content-center"
                                         :on-preview="onUploadPreview"
                                         :on-exceed="onExceed"
-                                        :before-upload="onBeforeUpload"
+                                        :before-upload="beforeUpload"
                                         :http-request="uploadHttpRequest"
                                         type="flex"
                                         justify="center"
@@ -191,6 +191,24 @@
                     }
                 }
             },
+
+            beforeUpload: {
+                type: Function,
+                default: () => {
+                    return async () => {
+                        console.debug('before-upload is not set')
+                    }
+                }
+            },
+
+            uploadHttpRequest: {
+                type: Function,
+                default: () => {
+                    return async () => {
+                        console.debug('upload-http-request is not set')
+                    }
+                }
+            },
             form: {
                 type: Object,
                 default() {
@@ -301,6 +319,16 @@
                 this.resourceVisible = false
             },
 
+            tableOfContentWithResource(parent, resource) {
+                return new TableOfContentViewModel(
+                    null,
+                    resource.title,
+                    parent.depth + 1,
+                    false,
+                    resource
+                )
+            },
+
             onUploadPreview(file) {
                 console.debug(file)
             },
@@ -310,42 +338,6 @@
                 console.debug(fileList)
             },
 
-            async onBeforeUpload(file) {
-
-                const response = await this.$http.post(
-                    '/api/resource/uploader',
-                    {
-                        raw_name: file.name,
-                        size: file.size,
-                        mime_type: file.type
-                    }
-                )
-                
-                this.uploadURL = response.data.upload_url
-                this.signature = response.data.signature
-                this.accessKey = response.data.access_key
-                this.policy = response.data.policy
-                this.object_path = response.data.object_path
-                this.uploadingResource = response.data.resource
-            },
-
-            async uploadHttpRequest(request) {
-                const formData = new FormData()
-
-                formData.append('key', this.object_path)
-                formData.append('file', request.file)
-                formData.append('OSSAccessKeyId', this.accessKey)
-                formData.append('policy', this.policy)
-                formData.append('signature', this.signature)
-                
-                await this.$http.post(this.uploadURL, formData)
-                const response = await this.$http.put(
-                    `/api/resource/${this.uploadingResource.id}/status`,
-                    {
-                        'status': 'available'
-                    }
-                )
-            },
 
             onClickAttachResource(index, row) {
                 this.chooseAttachTOC = row

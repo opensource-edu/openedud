@@ -4,9 +4,11 @@
         :table-of-content-deleting="onTableOfContentDeleting"
         :resource-select="onResourceSelect"
         :resource-selected="onResourceSelected"
+        :before-upload="onBeforeUpload"
+        :upload-http-request="onUploadHttpRequest"
         :form="this.course"
         :resources="resources"
-            v-bind:id="this.$route.params.id">
+        v-bind:id="this.$route.params.id">
 
     </CourseForm>
 </template>
@@ -25,7 +27,8 @@
         data() {
             return {
                 course: null,
-                resources: []
+                resources: [],
+                certificate: null
             }
         },
 
@@ -90,6 +93,45 @@
                     debugger
                     return false
                 }
+            },
+
+            async onBeforeUpload(file) {
+
+                const response = await this.$http.post(
+                    '/api/resource/uploader',
+                    {
+                        raw_name: file.name,
+                        size: file.size,
+                        mime_type: file.type
+                    }
+                )
+
+                this.certificate = {
+                    url: response.data.upload_url,
+                    signature: response.data.signature,
+                    accessKey: response.data.signature,
+                    policy: response.data.policy,
+                    key: response.data.object_path,
+                    resourceId: response.data.resource.id
+                }
+            },
+
+            async onUploadHttpRequest(request) {
+                const formData = new FormData()
+
+                formData.append('key', this.certificate.key)
+                formData.append('file', request.file)
+                formData.append('OSSAccessKeyId', this.certificate.accessKey)
+                formData.append('policy', this.certificate.policy)
+                formData.append('signature', this.certificate.signature)
+
+                await this.$http.post(this.certificate.url, formData)
+                const response = await this.$http.put(
+                    `/api/resource/${this.certificate.resourceId}/status`,
+                    {
+                        'status': 'available'
+                    }
+                )
             }
         }
     }
