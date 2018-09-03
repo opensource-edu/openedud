@@ -11,7 +11,7 @@ class ResourceController
 
     public function fetchResourceList()
     {
-        return Resource::orderBy('created_at', 'desc')->take(10)->get();
+        return Resource::orderBy('created_at', 'desc')->paginate(10);
     }
 
     function gmt_iso8601($time) {
