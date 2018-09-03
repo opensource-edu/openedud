@@ -33,7 +33,7 @@
                     </el-tab-pane>
 
                     <el-tab-pane label="选择资源" name="choice">
-                        <el-table :data="resources" border >
+                        <el-table :data="resources" border v-loading="resourceLoading">
                             <el-table-column prop="id" label="id" width="80"></el-table-column>
                             <el-table-column prop="title" label="标题"></el-table-column>
                             <el-table-column title="选择" width="100">
@@ -42,6 +42,17 @@
                                 </template>
                             </el-table-column>
                         </el-table>
+
+                        <el-row class="block">
+                            <el-col>
+                                <el-pagination
+                                    layout="prev, pager, next"
+                                    :total="pageTotal"
+                                    :page-size="pageSize"
+                                    @current-change="pageChange">
+                                </el-pagination>
+                            </el-col>
+                        </el-row>
                     </el-tab-pane>
                 </el-tabs>
 
@@ -150,6 +161,10 @@
         margin: 10px 0px;
         width: 100%;
     }
+    
+    .el-pagination {
+        text-align: center;
+    }
 </style>
 <script>
     import ResourceChoiceComponent from './ResourceChoiceComponent'
@@ -174,15 +189,23 @@
             tableOfContentDeleting: {
                 type: Function
             },
+
+            resourceLoading: {
+                type: Boolean,
+                default: false
+            },
+
             resources: {
                 type: Array,
                 default: () => {
                     return []
                 }
             },
+
             resourceSelect: {
                 type: Function
             },
+
             resourceSelected: {
                 type: Function,
                 default: () => {
@@ -209,6 +232,26 @@
                     }
                 }
             },
+
+            pageTotal: {
+                type: Number,
+                default: 20
+            },
+
+            pageSize: {
+                type: Number,
+                default: 2
+            },
+
+            pageChange: {
+                type: Function,
+                default: () => {
+                    return async () => {
+                        console.debug('page-change is not set')
+                    }
+                }
+            },
+
             form: {
                 type: Object,
                 default() {
@@ -241,7 +284,6 @@
                  * 资源挂载弹层的加载状态
                  */
                 attachResourceDialogLoading: false
-
             }
         },
 

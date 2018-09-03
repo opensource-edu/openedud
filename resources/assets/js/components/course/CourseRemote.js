@@ -38,9 +38,9 @@ export default class CourseRemote {
         return response.data
     }
 
-    async fetchResourceListTop10() {
+    async fetchResourceListTop10(page) {
         const response = await this.http.get(
-            `/api/resource`
+            `/api/resource?page=${page}`
         )
 
         return response.data

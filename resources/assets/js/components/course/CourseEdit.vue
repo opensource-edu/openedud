@@ -8,6 +8,10 @@
         :upload-http-request="onUploadHttpRequest"
         :form="this.course"
         :resources="resources"
+        :page-total="resourcePageTotal"
+        :page-size="resourcePageSize"
+        :page-change="pageChange"
+        :resource-loading="resourceLoading"
         v-bind:id="this.$route.params.id">
 
     </CourseForm>
@@ -28,6 +32,8 @@
             return {
                 course: null,
                 resources: [],
+                resourceLoading: false,
+                resourcePageTotal: 0,
                 certificate: null
             }
         },
@@ -70,10 +76,22 @@
             },
 
             async onResourceSelect() {
-                const resourceList = await this.remote.fetchResourceListTop10()
+                await this.loadResourceList(1)
+            },
+
+            async pageChange(page) {
+                await this.loadResourceList(page)
+            },
+
+            async loadResourceList(page) {
+                this.resourceLoading = true
+                const resourceList = await this.remote.fetchResourceListTop10(page)
                 this.resources = this
                     .resourceViewModelAssembler
-                    .toViewModelList(resourceList)
+                    .toViewModelList(resourceList.data)
+                this.resourcePageTotal = resourceList.total
+                this.resourcePageSize = resourceList.per_page
+                this.resourceLoading = false
             },
 
             async onResourceSelected(parent, tableOfContents) {
